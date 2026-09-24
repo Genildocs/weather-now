@@ -1,5 +1,5 @@
 // ==========================================
-// Hook: useWeather({ city })
+// Hook: useWeather({ target })
 // ==========================================
 // Busca o clima da cidade e expõe:
 // - status: 'idle' | 'loading' | 'success' | 'not-found' | 'error'
@@ -11,7 +11,7 @@
 // As unidades vêm da store (useUnitsStore). Trocar qualquer uma das três
 // refaz o pedido, mantendo os dados anteriores na tela (isRefreshing).
 //
-// Truque: cada pedido tem uma "chave" (cidade + unidades + tentativa).
+// Truque: cada pedido tem uma "chave" (alvo + unidades + tentativa).
 // Se a chave do resultado guardado é diferente da atual, é porque o pedido
 // novo ainda está em andamento → está carregando. Assim não precisamos
 // chamar setState dentro do corpo do effect (só quando a resposta chega).
@@ -23,7 +23,7 @@ import { useUnitsStore } from '../stores/useUnitsStore';
 
 const INITIAL = { key: null, status: 'idle', data: null, error: null };
 
-export function useWeather({ city }) {
+export function useWeather({ target }) {
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState(INITIAL);
 
@@ -32,18 +32,50 @@ export function useWeather({ city }) {
   const windSpeed = useUnitsStore((s) => s.windSpeed);
   const precipitation = useUnitsStore((s) => s.precipitation);
 
-  const trimmedCity = city?.trim() ?? '';
-  const key = `${trimmedCity}|${temperature}|${windSpeed}|${precipitation}|${attempt}`;
+  const isLocation = target?.kind === 'location';
+  const trimmedCity = isLocation ? '' : (target?.city?.trim() ?? '');
+  const locationName = isLocation ? target.location.name : '';
+  const locationAdmin1 = isLocation ? target.location.admin1 : '';
+  const locationCountry = isLocation ? target.location.country : '';
+  const locationCountryCode = isLocation ? target.location.countryCode : '';
+  const locationLatitude = isLocation ? Number(target.location.latitude) : null;
+  const locationLongitude = isLocation ? Number(target.location.longitude) : null;
+  const locationTimezone = isLocation ? target.location.timezone : '';
+  const locationSource = isLocation ? (target.location.source ?? 'named') : '';
+  const hasFiniteCoords =
+    isLocation && Number.isFinite(locationLatitude) && Number.isFinite(locationLongitude);
+  const targetKey = hasFiniteCoords
+    ? `coords:${locationLatitude.toFixed(4)},${locationLongitude.toFixed(4)}`
+    : (locationName || trimmedCity);
+  const key = `${targetKey}|${temperature}|${windSpeed}|${precipitation}|${attempt}`;
 
   useEffect(() => {
-    if (!trimmedCity) return;
+    if (!targetKey) return;
 
     // Cancela a requisição se a cidade/unidade mudar antes da resposta
     const controller = new AbortController();
 
     const units = { temperature, windSpeed, precipitation };
 
-    loadWeather({ city: trimmedCity, units }, { signal: controller.signal })
+    loadWeather(
+      {
+        city: trimmedCity,
+        location: isLocation
+          ? {
+              name: locationName,
+              admin1: locationAdmin1,
+              country: locationCountry,
+              countryCode: locationCountryCode,
+              latitude: locationLatitude,
+              longitude: locationLongitude,
+              timezone: locationTimezone,
+              source: locationSource,
+            }
+          : null,
+        units,
+      },
+      { signal: controller.signal },
+    )
       .then((response) => {
         // not-found não guarda dados; success guarda os novos
         setResult({ key, status: response.status, data: response.data ?? null, error: null });
@@ -55,14 +87,30 @@ export function useWeather({ city }) {
       });
 
     return () => controller.abort();
-  }, [key, trimmedCity, temperature, windSpeed, precipitation]);
+  }, [
+    key,
+    targetKey,
+    trimmedCity,
+    isLocation,
+    locationName,
+    locationAdmin1,
+    locationCountry,
+    locationCountryCode,
+    locationLatitude,
+    locationLongitude,
+    locationTimezone,
+    locationSource,
+    temperature,
+    windSpeed,
+    precipitation,
+  ]);
 
   function retry() {
     setAttempt((n) => n + 1);
   }
 
   // Sem cidade: nada a fazer
-  if (!trimmedCity) return { ...INITIAL, isRefreshing: false, retry };
+  if (!targetKey) return { ...INITIAL, isRefreshing: false, retry };
 
   const isPending = result.key !== key;
 

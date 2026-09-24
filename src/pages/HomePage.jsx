@@ -1,12 +1,12 @@
 // ==========================================
-// Página: Home (clima da cidade escolhida na URL)
+// Página: Home (clima da cidade ou localização escolhida)
 // ==========================================
-// Lê ?city= da URL, busca os dados (useWeather, que lê as unidades da store)
-// e monta a tela.
+// Lê a cidade da URL ou a geolocalização efêmera, busca os dados
+// (useWeather lê as unidades da store) e monta a tela.
 // Toda a "tradução" dos números da API para texto fica aqui, nos helpers
 // build*; os componentes continuam só recebendo props prontas.
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import BentoGrid from '../components/layout/BentoGrid';
 import CityHeader from '../components/weather/CityHeader';
@@ -48,7 +48,7 @@ function buildCityHeader(data, now) {
   });
 
   return {
-    city: [location.name, location.country].filter(Boolean).join(', '),
+    city: [location.name, location.country].filter(Boolean).join(', ') || 'Minha localização',
     cityTitle: location.admin1,
     // Sem estação real: mostramos a fonte dos dados. METAR, ciclo de sync,
     // radar e alertas não existem na Open-Meteo → ficam escondidos.
@@ -253,12 +253,27 @@ function ForecastSections({ data, now }) {
 }
 
 export default function HomePage() {
-  const { city } = useWeatherParams();
-  const { status, data, isRefreshing, retry } = useWeather({ city });
+  const { city, target, setLocation } = useWeatherParams();
+  const { status, data, isRefreshing, retry } = useWeather({ target });
   const now = useNow();
 
-  if (status === 'loading' || status === 'idle') return <LoadingState city={city} />;
-  if (status === 'not-found') return <NotFoundState query={city} />;
+  // Sincroniza a URL caso a geolocalização tenha começado sem nome ou genérica
+  // e sido enriquecida com o nome real da cidade
+  useEffect(() => {
+    if (
+      target.kind === 'location' &&
+      (!target.location.name || target.location.name === 'Minha localização') &&
+      data?.location?.name &&
+      data.location.name !== 'Minha localização'
+    ) {
+      setLocation(data.location);
+    }
+  }, [target, data?.location, setLocation]);
+
+  const targetLabel = (target.kind === 'location' ? target.location.name : city) || 'sua localização';
+
+  if (status === 'loading' || status === 'idle') return <LoadingState city={targetLabel} />;
+  if (status === 'not-found') return <NotFoundState query={targetLabel} />;
   if (status === 'error' || !data) return <ErrorState onRetry={retry} />;
 
   const today = data.daily[0];

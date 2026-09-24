@@ -3,7 +3,7 @@
 // ==========================================
 // Doc: https://open-meteo.com/en/docs/air-quality-api
 
-import { airQualityApi } from './http';
+import { airQualityApi } from './http.js';
 
 export async function getAirQuality({ latitude, longitude }, { signal } = {}) {
   const { data } = await airQualityApi.get('/air-quality', {

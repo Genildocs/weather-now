@@ -2,20 +2,30 @@
 // Layout do app: Header fixo + área principal com a página da rota
 // ==========================================
 // A página (ex.: HomePage) entra no <Outlet />.
-// A cidade mora na URL (useWeatherParams): o Header só muda a URL e a
-// página lê de lá. As unidades moram na store (o UnitsDropdown do Header
-// escreve nela direto), então não passam por aqui.
+// Cidades nomeadas moram na URL; a localização exata do navegador fica
+// somente na store em memória. As unidades vivem em outra store persistida.
 
 import { Outlet } from 'react-router-dom';
 import Header from './components/layout/Header';
 import { useWeatherParams } from './hooks/useWeatherParams';
 
 export default function App() {
-  const { city, setCity } = useWeatherParams();
+  const { city, target, signature, setLocation } = useWeatherParams();
+
+  function handleSelectLocation(location) {
+    setLocation(location);
+  }
+
+  const locationName = target.kind === 'location' ? (target.location.name || '') : city;
+  const locationKey = signature;
 
   return (
     <div className="app-container">
-      <Header city={city} onSearch={setCity} />
+      <Header
+        locationKey={locationKey}
+        locationName={locationName}
+        onSelectLocation={handleSelectLocation}
+      />
 
       <main className="main-content">
         {/* Brilhos atmosféricos do fundo (decorativos) */}

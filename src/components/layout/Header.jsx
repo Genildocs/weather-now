@@ -1,42 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import UnitsDropdown from '../ui/UnitsDropdown';
+import LocationSearch from '../ui/LocationSearch';
 
-// Campo de busca. Começa com a cidade atual; o Header o monta com
-// key={city}, então quando a cidade muda (inclusive pelo botão "voltar")
-// o React recria o campo e o texto acompanha — sem effect de sincronização.
-function HeaderSearch({ initialValue = '', inputRef, onSearch }) {
-  const [searchValue, setSearchValue] = useState(initialValue);
-
-  function handleSearchKeyDown(e) {
-    if (e.key === 'Enter' && searchValue.trim()) {
-      if (onSearch) onSearch(searchValue.trim());
-    }
-  }
-
-  return (
-    <div className="header-search">
-      <span className="material-symbols-outlined search-icon" aria-hidden="true">
-        search
-      </span>
-      <input
-        ref={inputRef}
-        id="citySearchInput"
-        type="text"
-        placeholder="Buscar cidade, coordenadas..."
-        aria-label="Buscar cidade"
-        autoComplete="off"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        onKeyDown={handleSearchKeyDown}
-      />
-      <kbd className="search-badge" aria-hidden="true">
-        ⌘K
-      </kbd>
-    </div>
-  );
-}
-
-export default function Header({ city = '', onSearch }) {
+export default function Header({ locationKey = '', locationName = '', onSelectLocation }) {
   const searchInputRef = useRef(null);
 
   // Atalho ⌘K ou Ctrl+K para focar no input de busca
@@ -66,7 +32,14 @@ export default function Header({ city = '', onSearch }) {
         </div>
 
         {/* Campo de Busca (recriado quando a cidade muda) */}
-        <HeaderSearch key={city} initialValue={city} inputRef={searchInputRef} onSearch={onSearch} />
+        <div className="header-search">
+          <LocationSearch
+            key={locationKey}
+            initialValue={locationName}
+            inputRef={searchInputRef}
+            onSelectLocation={onSelectLocation}
+          />
+        </div>
 
         {/* Ações (menu de unidades: lê e escreve direto na store) */}
         <div className="header-actions">

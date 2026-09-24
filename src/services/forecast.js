@@ -3,7 +3,7 @@
 // ==========================================
 // Doc: https://open-meteo.com/en/docs
 
-import { forecastApi } from './http';
+import { forecastApi } from './http.js';
 
 // Variáveis pedidas em cada bloco (nomes conferidos na doc / API real)
 const CURRENT_VARS = [

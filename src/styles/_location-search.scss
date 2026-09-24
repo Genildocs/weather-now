@@ -1,0 +1,329 @@
+// ==========================================
+// Busca de localização (combobox + recentes)
+// ==========================================
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.location-search {
+  position: relative;
+  display: flex;
+  height: 44px;
+  align-items: center;
+  width: 100%;
+  border: $border-width-hairline solid $border-hairline;
+  border-radius: $radius-default;
+  background:
+    linear-gradient(90deg, color.change($accent-blue, $alpha: 0.08), transparent 32%),
+    $neutral-700;
+  box-shadow: inset 0 1px 0 color.change($neutral-0, $alpha: 0.035);
+  transition:
+    border-color $duration-fast ease,
+    background-color $duration-fast ease,
+    box-shadow $duration-fast ease;
+
+  &:hover {
+    border-color: color.change($color-primary, $alpha: 0.38);
+    background-color: color.adjust($neutral-700, $lightness: 2%);
+  }
+
+  &:focus-within,
+  &--open {
+    border-color: $accent-blue;
+    box-shadow:
+      inset 0 1px 0 color.change($neutral-0, $alpha: 0.05),
+      0 0 0 3px color.change($accent-blue, $alpha: 0.22);
+
+    .search-icon {
+      color: $color-primary;
+    }
+
+    .search-badge {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  &__field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    height: 100%;
+    min-width: 0;
+
+    .search-icon {
+      position: absolute;
+      left: $space-md;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $neutral-300;
+      font-size: 20px;
+      pointer-events: none;
+      transition: color $duration-fast ease;
+    }
+
+    input {
+      width: 100%;
+      height: 100%;
+      padding: 0 $space-md 0 42px;
+      border: 0;
+      border-radius: $radius-default 0 0 $radius-default;
+      background: transparent;
+      color: $text-main;
+      font-size: $font-size-interactive;
+      outline: none;
+      box-shadow: none;
+
+      @include respond-to('tablet') {
+        padding-right: 64px;
+      }
+
+      &:hover,
+      &:focus {
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      &::placeholder {
+        color: $neutral-300;
+      }
+    }
+
+    .search-badge {
+      display: none;
+      position: absolute;
+      right: $space-sm;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 2px 6px;
+      background-color: color.change($bg-surface-container-low, $alpha: 0.85);
+      border: $border-width-hairline solid color.change($border-hairline, $alpha: 0.78);
+      border-radius: $radius-xs;
+      color: $neutral-300;
+      font-size: $font-size-caption;
+      font-family: inherit;
+      line-height: 1.2;
+      pointer-events: none;
+      user-select: none;
+      transition:
+        opacity $duration-fast ease,
+        visibility $duration-fast ease;
+
+      @include respond-to('tablet') {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  &__geo.app-btn.btn--icon-only {
+    flex: 0 0 auto;
+    width: 43px;
+    height: 100%;
+    border: 0;
+    border-left: $border-width-hairline solid $border-hairline;
+    border-radius: 0 $radius-default $radius-default 0;
+    background: transparent;
+    color: $color-primary;
+
+    &:hover {
+      border-color: color.change($color-primary, $alpha: 0.35);
+      background-color: color.change($accent-blue, $alpha: 0.14);
+      box-shadow: inset 0 0 18px color.change($accent-blue, $alpha: 0.08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: -3px;
+    }
+
+    .btn-icon {
+      color: $color-primary;
+      font-size: 20px;
+    }
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.8;
+
+      .btn-icon {
+        animation: location-search-spin 0.8s linear infinite;
+      }
+    }
+  }
+
+  &__panel {
+    @include card-surface(
+      $bg: $neutral-800,
+      $padding: $space-sm,
+      $radius: $radius-md,
+      $border-color: $border-hairline,
+      $shadow: $shadow-xl
+    );
+
+    position: absolute;
+    top: calc(100% + #{$space-sm});
+    left: 0;
+    right: 0;
+    z-index: 70;
+    min-width: min(22rem, calc(100vw - #{$space-xl}));
+    overflow: hidden;
+    border-top-color: color.change($color-primary, $alpha: 0.48);
+    animation: location-search-enter $duration-fast $ease-out-expo both;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  &__panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-md;
+  }
+
+  &__eyebrow {
+    display: block;
+    padding: $space-xs $space-sm $space-sm;
+    color: $neutral-300;
+    font-size: $font-size-caption;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__clear {
+    margin: 0 $space-xs $space-xs 0;
+    border: 0;
+    background: transparent;
+    color: $color-primary;
+    font: inherit;
+    font-size: $font-size-caption;
+    cursor: pointer;
+
+    &:hover {
+      color: $neutral-0;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+      border-radius: $radius-xs;
+    }
+  }
+
+  &__option {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: $space-sm;
+    width: 100%;
+    padding: 10px $space-sm;
+    border: 0;
+    border-radius: $radius-default;
+    background: transparent;
+    color: $neutral-200;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color $duration-fast ease,
+      color $duration-fast ease;
+
+    &:hover,
+    &--active,
+    &[aria-selected='true'] {
+      background:
+        linear-gradient(90deg, color.change($accent-blue, $alpha: 0.14), transparent 72%),
+        $neutral-700;
+      color: $neutral-0;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: -2px;
+    }
+  }
+
+  &__pin {
+    color: $accent-rain;
+    font-size: 20px;
+    filter: drop-shadow(0 0 6px color.change($accent-rain, $alpha: 0.25));
+  }
+
+  &__option-copy {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__option-name,
+  &__option-meta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__option-name {
+    color: inherit;
+    font-size: $font-size-interactive;
+    font-weight: $font-weight-semibold;
+  }
+
+  &__option-meta,
+  &__country {
+    color: $neutral-300;
+    font-size: $font-size-caption;
+  }
+
+  &__country {
+    padding: 2px $space-xs;
+    border: $border-width-hairline solid $border-hairline;
+    border-radius: $radius-xs;
+    font-variant-numeric: tabular-nums;
+    text-transform: uppercase;
+  }
+
+  &__message {
+    margin: $space-xs;
+    padding: $space-sm;
+    border-radius: $radius-default;
+    background-color: color.change($accent-blue, $alpha: 0.12);
+    color: $neutral-200;
+    font-size: $font-size-caption;
+    line-height: $line-height-body;
+
+    &--error {
+      background-color: color.change($color-error, $alpha: 0.1);
+      color: $color-error;
+    }
+  }
+}
+
+@keyframes location-search-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-#{$space-xs});
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes location-search-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .location-search__panel,
+  .location-search__geo:disabled .btn-icon {
+    animation: none;
+  }
+}
