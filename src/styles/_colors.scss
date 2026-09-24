@@ -1,0 +1,107 @@
+// ==========================================
+// Design Tokens / Paleta de Cores (Material 3)
+// ==========================================
+@use 'sass:color';
+
+// --- Primary ---
+$color-primary: #bcc2ff;
+$text-on-primary: #001999;
+$bg-primary-container: #4255dc;
+$text-on-primary-container: #dee0ff;
+$color-primary-fixed: #dfe0ff;
+$color-primary-fixed-dim: #bcc2ff;
+$text-on-primary-fixed: #000c61;
+$text-on-primary-fixed-variant: #1c32be;
+$color-inverse-primary: #3b4ed6;
+
+// --- Secondary ---
+$color-secondary: #ffb68c;
+$text-on-secondary: #532200;
+$bg-secondary-container: #f87500;
+$text-on-secondary-container: #572400;
+$color-secondary-fixed: #ffdbc9;
+$color-secondary-fixed-dim: #ffb68c;
+$text-on-secondary-fixed: #321200;
+$text-on-secondary-fixed-variant: #753400;
+
+// --- Tertiary ---
+$color-tertiary: #c2c1ff;
+$text-on-tertiary: #211594;
+$bg-tertiary-container: #5855c9;
+$text-on-tertiary-container: #e2dfff;
+$color-tertiary-fixed: #e2dfff;
+$color-tertiary-fixed-dim: #c2c1ff;
+$text-on-tertiary-fixed: #0e006a;
+$text-on-tertiary-fixed-variant: #3934aa;
+
+// --- Error ---
+$color-error: #ffb4ab;
+$text-on-error: #690005;
+$bg-error-container: #93000a;
+$text-on-error-container: #ffdad6;
+
+// --- Surface & Background ---
+$bg-main: #11102a;
+$text-main: #e3dfff;
+$bg-surface: #11102a;
+$text-surface: #e3dfff;
+$bg-surface-dim: #11102a;
+$bg-surface-bright: #373652;
+$bg-surface-variant: #33324e;
+$text-surface-variant: #c5c5d7;
+$bg-inverse-surface: #e3dfff;
+$text-inverse-surface: #2f2d49;
+$bg-surface-tint: #bcc2ff;
+
+// --- Surface Containers ---
+$bg-surface-container-lowest: #0c0b25;
+$bg-surface-container-low: #1a1933;
+$bg-surface-container: #1e1d37;
+$bg-surface-container-high: #282742;
+$bg-surface-container-highest: #33324e;
+$bg-card-surface: #2e323a;
+
+// --- Outlines & Borders ---
+$border-outline: #8f8fa0;
+$border-outline-variant: #454654;
+$border-hairline: #3c3b5e;
+$border-light: #e0e4ea;
+
+// --- Accents ---
+$accent-blue: #4255dc;
+$accent-blue-deep: #271e99;
+$accent-orange: #ff7a0a;
+
+// --- Neutrals ---
+$neutral-0: #ffffff;
+$neutral-200: #d8d6e5;
+$neutral-300: #acacb7;
+$neutral-600: #3c3b5e;
+$neutral-700: #302f4a;
+$neutral-800: #262540;
+$neutral-900: #02012c;
+
+// --- Sombras ---
+// Cor-base das sombras; a opacidade vem de color.change($alpha)
+$color-shadow: #000000;
+
+$shadow-sm: 0 1px 2px 0 color.change($color-shadow, $alpha: 0.05);
+$shadow-md:
+  0 4px 6px -1px color.change($color-shadow, $alpha: 0.1),
+  0 2px 4px -2px color.change($color-shadow, $alpha: 0.1);
+$shadow-lg:
+  0 10px 15px -3px color.change($color-shadow, $alpha: 0.1),
+  0 4px 6px -4px color.change($color-shadow, $alpha: 0.1);
+$shadow-xl:
+  0 20px 25px -5px color.change($color-shadow, $alpha: 0.1),
+  0 8px 10px -6px color.change($color-shadow, $alpha: 0.1);
+$shadow-hover: 0 16px 32px -8px color.change($color-shadow, $alpha: 0.45);
+
+// --- Mapa de acentos (usado com @each para gerar modificadores) ---
+$accent-colors: (
+  'primary': $color-primary,
+  'secondary': $color-secondary,
+  'tertiary': $color-tertiary,
+  'blue': $accent-blue,
+  'orange': $accent-orange,
+);

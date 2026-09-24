@@ -1,0 +1,280 @@
+// ==========================================
+// Styles: Hero Card (clima atual)
+// ==========================================
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.hero-card {
+  @include card-surface(
+    $bg: $bg-card-surface,
+    $padding: $space-xl,
+    $border-color: color.change($border-hairline, $alpha: 0.4),
+    $shadow: $shadow-xl,
+    $interactive: true
+  );
+  position: relative;
+  overflow: hidden; // recorta os glows nos cantos arredondados
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  // --- Glows desfocados do fundo ---
+  &__glow {
+    &--blue {
+      @include glow($accent-blue, 15rem, $blur: 64px, $alpha: 0.25);
+      top: -4rem;
+      right: -4rem;
+    }
+
+    &--orange {
+      @include glow($accent-orange, 12rem, $blur: 40px, $alpha: 0.1);
+      bottom: -2.5rem;
+      left: -2.5rem;
+    }
+  }
+
+  &:hover &__glow--blue {
+    transform: scale(1.25);
+  }
+
+  &:hover &__glow--orange {
+    transform: scale(1.1);
+  }
+
+  // Conteúdo fica acima dos glows
+  &__top,
+  &__readout,
+  &__summary {
+    position: relative;
+    z-index: 1;
+  }
+
+  // --- Topo: badge + condição + ícone ---
+  &__top {
+    @include flex-row($align: flex-start, $gap: $space-lg);
+  }
+
+  &__badge {
+    @include pill(color.change($neutral-700, $alpha: 0.8), $neutral-200);
+    margin-bottom: $space-md;
+    border: $border-width-hairline solid color.change($neutral-600, $alpha: 0.4);
+    box-shadow: $shadow-sm;
+    font-size: $font-size-section;
+    line-height: $line-height-section;
+    font-weight: $font-weight-medium;
+  }
+
+  &__badge-dot {
+    @include status-dot($accent-orange);
+    animation: hero-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  &__condition {
+    font-family: $font-sans; // o mockup usa DM Sans aqui, não a fonte de título
+    font-size: $font-size-headline-md;
+    line-height: $line-height-headline-md;
+    font-weight: $font-weight-semibold;
+    color: $neutral-0;
+    transition: color $duration-fast;
+  }
+
+  &:hover &__condition {
+    color: $color-primary;
+  }
+
+  &__description {
+    margin-top: $space-xs;
+    font-size: $font-size-body;
+    line-height: $line-height-body;
+    font-weight: $font-weight-light;
+    color: $neutral-300;
+  }
+
+  &__icon {
+    @include flex-row($justify: center);
+    flex-shrink: 0;
+    width: 5rem;
+    height: 5rem;
+    padding: $space-sm;
+    border-radius: $radius-md;
+    background-color: $neutral-0;
+    box-shadow: $shadow-lg;
+    animation: hero-float 5s ease-in-out infinite;
+
+    svg {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+
+  // Raios do sol pulsando em volta do centro do círculo (26, 24)
+  &__sun-rays {
+    transform-origin: 26px 24px;
+    animation: hero-sun-rays 3.5s ease-in-out infinite;
+  }
+
+  // --- Leitura principal da temperatura ---
+  &__readout {
+    @include flex-row($justify: flex-start, $align: baseline, $gap: $space-md);
+    flex-wrap: wrap;
+    margin-block: $space-xl;
+  }
+
+  &__temp {
+    font-family: $font-heading;
+    font-size: $font-size-hero-mobile;
+    line-height: 1;
+    letter-spacing: $letter-spacing-hero-mobile;
+    font-weight: $font-weight-bold;
+    color: $neutral-0;
+    filter: drop-shadow(0 4px 3px color.change($color-shadow, $alpha: 0.07));
+
+    @include respond-to('tablet') {
+      font-size: $font-size-hero;
+      letter-spacing: $letter-spacing-hero;
+    }
+  }
+
+  &__temp-unit {
+    font-size: $font-size-hero-mobile;
+    letter-spacing: $letter-spacing-hero-mobile;
+    color: $accent-orange;
+  }
+
+  &__range {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__feels {
+    font-size: $font-size-title-day;
+    line-height: $line-height-title;
+    font-weight: $font-weight-medium;
+    color: $neutral-0;
+  }
+
+  &__minmax {
+    @include flex-row($justify: flex-start, $gap: $space-xs);
+    margin-top: $space-xs;
+    font-size: $font-size-metric;
+    line-height: $line-height-interactive;
+    font-weight: $font-weight-bold;
+    color: $neutral-300;
+
+    .material-symbols-outlined {
+      font-size: 16px;
+    }
+  }
+
+  &__max,
+  &__min {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__max {
+    color: $color-secondary;
+
+    .material-symbols-outlined {
+      animation: hero-bounce 2s infinite;
+    }
+  }
+
+  &__min {
+    color: $color-tertiary;
+  }
+
+  &__divider {
+    color: $neutral-600;
+  }
+
+  // --- Faixa inferior: luz do dia + chip de conforto ---
+  &__summary {
+    @include flex-row($gap: $space-sm);
+    flex-wrap: wrap;
+    padding: $space-md;
+    border-radius: $radius-default;
+    background-color: color.change($neutral-800, $alpha: 0.8);
+    backdrop-filter: blur(8px);
+    border: $border-width-hairline solid color.change($border-hairline, $alpha: 0.3);
+    transition: border-color $duration-fast;
+  }
+
+  &:hover &__summary {
+    border-color: color.change($color-primary, $alpha: 0.3);
+  }
+
+  &__daylight {
+    @include flex-row($justify: flex-start, $gap: $space-xs);
+    font-size: $font-size-section;
+    line-height: $line-height-section;
+    font-weight: $font-weight-medium;
+    color: $neutral-200;
+
+    .material-symbols-outlined {
+      font-size: 20px;
+      color: $color-secondary;
+      animation: hero-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  }
+
+  &__chip {
+    @include pill($neutral-700, $neutral-0, $radius: $radius-sm, $padding: 2px $space-sm);
+    box-shadow: $shadow-sm;
+    font-size: $font-size-caption;
+    line-height: $line-height-caption;
+    letter-spacing: $letter-spacing-caption;
+    font-weight: $font-weight-bold;
+  }
+
+  // Acessibilidade: sem animações pra quem pediu menos movimento
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+// --- Keyframes ---
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1.5deg);
+  }
+}
+
+@keyframes hero-sun-rays {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes hero-bounce {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}

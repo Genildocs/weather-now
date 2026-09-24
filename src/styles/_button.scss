@@ -1,0 +1,95 @@
+// ==========================================
+// Styles: Button Component
+// ==========================================
+@use 'variables' as *;
+@use 'sass:color';
+
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-xs;
+  padding: $padding-menu-item-y $padding-menu-item-x;
+  border-radius: $radius-default;
+  font-family: $font-sans;
+  font-size: $font-size-interactive;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  border: $border-width-hairline solid transparent;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    transform 0.15s,
+    box-shadow 0.2s;
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  .btn-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  // --- Variantes ---
+
+  // Padrão / Neutro
+  &.btn--default {
+    background-color: $neutral-700;
+    border-color: $border-hairline;
+    color: $neutral-0;
+
+    &:hover {
+      background-color: $bg-surface-container-high;
+      border-color: color.adjust($color-primary, $alpha: -0.4);
+    }
+  }
+
+  // Variante: Botão de Unidade (°C / °F)
+  &.btn--unit {
+    background-color: $neutral-700;
+    border-color: $border-hairline;
+    color: $neutral-0;
+
+    &:hover {
+      background-color: $bg-surface-container-high;
+      border-color: color.adjust($color-primary, $alpha: -0.4);
+    }
+
+    .btn-icon-left {
+      color: $accent-orange;
+    }
+
+    .btn-icon-right {
+      color: $neutral-300;
+    }
+  }
+
+  // Variante: Primário (Destaque)
+  &.btn--primary {
+    background-color: $bg-primary-container;
+    color: $text-on-primary-container;
+    box-shadow: 0 4px 12px rgba(66, 85, 220, 0.25);
+
+    &:hover {
+      background-color: color.adjust($bg-primary-container, $lightness: 5%);
+    }
+  }
+
+  // Variante: Somente Ícone
+  &.btn--icon-only {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background-color: $neutral-700;
+    border-color: $border-hairline;
+    color: $neutral-0;
+
+    &:hover {
+      background-color: $bg-surface-container-high;
+      border-color: color.adjust($color-primary, $alpha: -0.4);
+    }
+  }
+}

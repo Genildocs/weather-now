@@ -1,0 +1,103 @@
+// ==========================================
+// Mixins reaproveitáveis
+// ==========================================
+// Uso nos partials: @use 'mixins' as *;
+@use 'sass:map';
+@use 'sass:color';
+@use 'variables' as *;
+
+// --- Responsividade ---
+
+// $bp: chave do mapa $breakpoints (mobile | tablet | desktop | wide) — mobile-first (min-width)
+@mixin respond-to($bp) {
+  @if not map.has-key($breakpoints, $bp) {
+    @error 'Breakpoint "#{$bp}" não existe. Opções: #{map.keys($breakpoints)}.';
+  }
+
+  @media (min-width: map.get($breakpoints, $bp)) {
+    @content;
+  }
+}
+
+// --- Superfícies ---
+
+// $bg/$padding/$radius: aparência; $border-color: borda hairline; $shadow: sombra (null = sem); $interactive: hover que "levanta" o card
+@mixin card-surface(
+  $bg: $neutral-800,
+  $padding: $space-lg,
+  $radius: $radius-md,
+  $border-color: transparent,
+  $shadow: null,
+  $interactive: false
+) {
+  background-color: $bg;
+  border-radius: $radius;
+  padding: $padding;
+  border: $border-width-hairline solid $border-color;
+  box-shadow: $shadow; // se for null, o Sass nem escreve a propriedade
+  transition:
+    transform $duration-card $ease-out-expo,
+    border-color $duration-card $ease-out-expo,
+    box-shadow $duration-card $ease-out-expo,
+    background-color $duration-card $ease-out-expo;
+
+  @if $interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: color.change($color-primary, $alpha: 0.25);
+      box-shadow: $shadow-hover;
+    }
+  }
+}
+
+// $bg/$color: cores do badge; $radius: full (pílula) ou menor (chip); $padding: y x
+@mixin pill($bg, $color, $radius: $radius-full, $padding: $space-xs $space-md) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: $padding;
+  border-radius: $radius;
+  background-color: $bg;
+  color: $color;
+  white-space: nowrap;
+}
+
+// $color: cor do ponto; $size: diâmetro; $glow: halo luminoso da mesma cor (true/false)
+@mixin status-dot($color, $size: 0.375rem, $glow: false) {
+  display: inline-block;
+  flex-shrink: 0; // não amassa dentro de linhas flex
+  width: $size;
+  height: $size;
+  border-radius: $radius-full;
+  background-color: $color;
+
+  @if $glow {
+    box-shadow: 0 0 8px color.change($color, $alpha: 0.8);
+  }
+}
+
+// --- Layout ---
+
+// $justify/$align: alinhamento flex; $gap: espaço entre os itens
+@mixin flex-row($justify: space-between, $align: center, $gap: 0) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+}
+
+// --- Efeitos ---
+
+// $color: cor do brilho; $size: diâmetro; $blur: desfoque; $alpha: opacidade. Posição fica com quem usa.
+@mixin glow($color, $size, $blur: 64px, $alpha: 0.25) {
+  position: absolute;
+  width: $size;
+  height: $size;
+  border-radius: $radius-full;
+  background-color: color.change($color, $alpha: $alpha);
+  filter: blur($blur);
+  pointer-events: none;
+  transition: transform $duration-slow ease-out;
+}

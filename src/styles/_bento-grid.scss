@@ -1,0 +1,42 @@
+// ==========================================
+// Styles: Bento Grid (só layout)
+// ==========================================
+// Mobile: tudo empilhado. Desktop: hero 5/12 + métricas 7/12.
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: $space-lg;
+  margin-block: $space-xl;
+
+  @include respond-to('desktop') {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  // --- Coluna do hero ---
+  &__hero {
+    display: grid; // o card filho estica e ocupa a altura toda
+
+    @include respond-to('desktop') {
+      grid-column: span 5;
+    }
+  }
+
+  // --- Grade de métricas (1 → 2 → 3 colunas) ---
+  &__metrics {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: $space-md;
+
+    @include respond-to('tablet') {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @include respond-to('desktop') {
+      grid-column: span 7;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}

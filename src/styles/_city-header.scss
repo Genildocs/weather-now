@@ -1,0 +1,332 @@
+// ==========================================
+// Styles: City Header (faixa de telemetria + cidade + mini-cards)
+// ==========================================
+// Mobile: tudo empilhado. Desktop: cidade à esquerda, mini-cards à direita (alinhados ao fundo).
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Borda translúcida usada na cápsula e no chip METAR
+$hairline-soft: color.change($border-hairline, $alpha: 0.4);
+
+// Tipografia de legenda (caption), repetida em vários pedaços
+%caption {
+  font-size: $font-size-caption;
+  line-height: $line-height-caption;
+  letter-spacing: $letter-spacing-caption;
+  font-weight: $font-weight-medium;
+}
+
+// Separador "•" entre os trechos de texto
+%separator {
+  color: $neutral-600;
+}
+
+.city-header {
+  // --- Linha 1: status da estação + cápsula de controles ---
+  &__ribbon {
+    @include flex-row($gap: $space-md);
+    flex-wrap: wrap;
+    margin-bottom: $space-xl;
+  }
+
+  &__status {
+    @include flex-row($justify: flex-start, $gap: $space-sm);
+    flex-wrap: wrap;
+  }
+
+  // Ponto "ao vivo": bolinha fixa + anel que expande e some (::before)
+  &__live-dot {
+    @include status-dot($accent-orange, $size: 0.625rem, $glow: true);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-color: inherit;
+      opacity: 0.75;
+      animation: city-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+  }
+
+  &__station {
+    font-size: $font-size-section;
+    line-height: $line-height-section;
+    font-weight: $font-weight-medium;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: $neutral-300;
+  }
+
+  &__sep {
+    @extend %separator;
+  }
+
+  &__sync {
+    @extend %caption;
+    @include flex-row($justify: flex-start, $gap: $space-xs);
+    color: $neutral-300;
+
+    .material-symbols-outlined {
+      font-size: 14px;
+      color: $color-tertiary;
+      animation: city-spin 9s linear infinite;
+    }
+  }
+
+  // --- Cápsula de controles rápidos ---
+  &__controls {
+    @include card-surface($padding: 0.375rem, $border-color: $hairline-soft, $shadow: $shadow-lg);
+    @include flex-row($gap: $space-sm);
+  }
+
+  &__controls-divider {
+    width: $border-width-hairline;
+    height: 1.25rem;
+    background-color: $neutral-700;
+  }
+
+  &__control {
+    @include flex-row($gap: $space-xs);
+    // Reset do <button> nativo
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+
+    padding: 0.375rem $space-md;
+    border-radius: $radius-default;
+    font-size: $font-size-interactive;
+    line-height: $line-height-interactive;
+    font-weight: $font-weight-medium;
+    color: $neutral-200;
+    transition:
+      color $duration-fast,
+      background-color $duration-fast,
+      transform $duration-fast,
+      filter $duration-fast;
+
+    &:hover {
+      color: $neutral-0;
+      background-color: $neutral-700;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+
+    .material-symbols-outlined {
+      font-size: 18px;
+      color: $color-primary;
+      transition: transform 0.5s;
+    }
+
+    &:hover .material-symbols-outlined {
+      transform: rotate(90deg);
+    }
+
+    // Variante de alerta: fundo destacado e cor secondary
+    &--alert {
+      background-color: $bg-surface-container-high;
+      color: $color-secondary;
+      box-shadow: $shadow-sm;
+
+      &:hover {
+        color: $color-secondary;
+        background-color: $bg-surface-container-high;
+        filter: brightness(1.1);
+      }
+
+      .material-symbols-outlined {
+        color: inherit;
+        animation: city-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      &:hover .material-symbols-outlined {
+        transform: none; // o raio só pulsa, não gira
+      }
+    }
+  }
+
+  // --- Linha 2: cidade + meta (esquerda) e mini-cards (direita) ---
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: $space-lg;
+    margin-bottom: $space-xl;
+    padding-bottom: $space-lg;
+    border-bottom: $border-width-hairline solid color.change($border-hairline, $alpha: 0.2);
+
+    @include respond-to('desktop') {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+  }
+
+  &__identity {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+    min-width: 0; // deixa o nome quebrar linha em vez de estourar o flex
+  }
+
+  &__title {
+    @include flex-row($justify: flex-start, $gap: $space-sm);
+    flex-wrap: wrap;
+  }
+
+  &__pin {
+    font-size: 28px;
+    color: $color-primary;
+    animation: city-bounce 2.5s infinite;
+  }
+
+  &__name {
+    font-family: $font-heading;
+    font-size: $font-size-hero-mobile;
+    line-height: 1;
+    letter-spacing: $letter-spacing-hero-mobile;
+    font-weight: $font-weight-bold;
+    color: $neutral-0;
+
+    @include respond-to('desktop') {
+      font-size: $font-size-hero;
+      letter-spacing: $letter-spacing-hero;
+    }
+  }
+
+  &__metar {
+    @include pill($neutral-800, $color-tertiary, $radius: $radius-default, $padding: 2px $space-sm);
+    @extend %caption;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: $border-width-hairline solid $hairline-soft;
+    transition: border-color $duration-fast;
+
+    &:hover {
+      border-color: color.change($color-tertiary, $alpha: 0.5);
+    }
+  }
+
+  &__meta {
+    @include flex-row($justify: flex-start, $gap: $space-xs);
+    flex-wrap: wrap;
+    padding-left: $space-xs;
+    font-size: $font-size-body;
+    line-height: $line-height-body;
+    font-weight: $font-weight-light;
+    color: $neutral-300;
+  }
+
+  &__updated {
+    @include flex-row($justify: flex-start, $gap: $space-xs);
+    font-size: $font-size-interactive;
+    line-height: $line-height-interactive;
+    font-weight: $font-weight-medium;
+    color: $color-secondary;
+  }
+
+  &__updated-dot {
+    @include status-dot($color-secondary);
+  }
+
+  // --- Conjunto de mini-cards de telemetria ---
+  &__stats {
+    @include flex-row($justify: flex-start, $gap: $space-xs);
+    flex-wrap: wrap;
+    list-style: none;
+  }
+
+  // Acessibilidade: sem animações pra quem pediu menos movimento
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+// ==========================================
+// Bloco reaproveitável: mini-card de telemetria
+// ==========================================
+// Ícone à esquerda + label pequena em cima + valor em negrito embaixo
+.stat-chip {
+  @include card-surface(
+    $padding: $space-sm $space-md,
+    $radius: $radius-md,
+    $shadow: $shadow-sm,
+    $interactive: true
+  );
+  @include flex-row($justify: flex-start, $gap: $space-xs);
+  cursor: default; // levanta no hover, mas não é clicável
+
+  &__icon {
+    font-size: 18px;
+    color: $neutral-300;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    @extend %caption;
+    line-height: 1;
+    color: $neutral-300;
+  }
+
+  &__value {
+    font-size: $font-size-metric;
+    line-height: $line-height-interactive;
+    font-weight: $font-weight-bold;
+    color: $neutral-0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// --- Keyframes ---
+// Anel do ponto "ao vivo": cresce e desaparece
+@keyframes city-ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes city-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes city-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes city-bounce {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}

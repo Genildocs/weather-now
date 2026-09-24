@@ -1,0 +1,76 @@
+// ==========================================
+// Styles: Layout (container da página)
+// ==========================================
+// Mobile-first: margem lateral cresce com a tela (mobile → tablet → desktop)
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.main-content {
+  position: relative;
+  isolation: isolate; // cria um contexto de empilhamento: os glows (z-index -1) ficam atrás do conteúdo, mas dentro do main
+  overflow: hidden; // recorta os glows que vazam pelas bordas
+  max-width: $container-max;
+  margin-inline: auto;
+  padding-block: $space-xl;
+  padding-inline: $margin-mobile;
+
+  @include respond-to('tablet') {
+    padding-inline: $margin-tablet;
+  }
+
+  @include respond-to('desktop') {
+    padding-inline: $margin-desktop;
+  }
+
+  // --- Brilhos atmosféricos do fundo ("respirando" devagar) ---
+  &__glow {
+    &--blue {
+      @include glow($accent-blue, 24rem, $alpha: 0.2);
+      z-index: -1;
+      top: -8rem;
+      left: -5rem;
+      animation: ambient-pulse-blue 16s ease-in-out infinite alternate;
+    }
+
+    &--orange {
+      @include glow($accent-orange, 20rem, $alpha: 0.15);
+      z-index: -1;
+      top: 12rem;
+      right: 2.5rem;
+      animation: ambient-pulse-orange 18s ease-in-out infinite alternate;
+    }
+  }
+
+  // Acessibilidade: glows parados pra quem pediu menos movimento
+  @media (prefers-reduced-motion: reduce) {
+    &__glow--blue,
+    &__glow--orange {
+      animation: none;
+    }
+  }
+}
+
+// --- Keyframes ---
+@keyframes ambient-pulse-blue {
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.15) translate(20px, -15px);
+    opacity: 0.25;
+  }
+}
+
+@keyframes ambient-pulse-orange {
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.12;
+  }
+  50% {
+    transform: scale(1.2) translate(-25px, 20px);
+    opacity: 0.22;
+  }
+}

@@ -1,0 +1,2062 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&amp;family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @layer base {
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          overscroll-behavior: none;
+        }
+        main > :first-child {
+          margin-top: 0 !important;
+        }
+        main > :last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Micro-animations & atmospheric keyframes */
+      @keyframes ambientPulseSlow {
+        0%,
+        100% {
+          transform: scale(1) translate(0, 0);
+          opacity: 0.15;
+        }
+        50% {
+          transform: scale(1.15) translate(20px, -15px);
+          opacity: 0.25;
+        }
+      }
+
+      @keyframes ambientPulseOrange {
+        0%,
+        100% {
+          transform: scale(1) translate(0, 0);
+          opacity: 0.12;
+        }
+        50% {
+          transform: scale(1.2) translate(-25px, 20px);
+          opacity: 0.22;
+        }
+      }
+
+      @keyframes gentleFloat {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-4px) rotate(1.5deg);
+        }
+      }
+
+      @keyframes sunRaysPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.9;
+        }
+        50% {
+          transform: scale(1.08);
+          opacity: 1;
+        }
+      }
+
+      @keyframes radarSweep {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes radarWaveRipple {
+        0% {
+          transform: scale(0.2);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scale(2.4);
+          opacity: 0;
+        }
+      }
+
+      @keyframes shimmerGlow {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+
+      @keyframes solarZenithPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 3px rgba(255, 122, 10, 0.5));
+        }
+        50% {
+          transform: scale(1.3);
+          filter: drop-shadow(0 0 10px rgba(255, 122, 10, 0.9));
+        }
+      }
+
+      /* Card highlight dynamic borders */
+      .interactive-card {
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid transparent;
+      }
+      .interactive-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(188, 194, 255, 0.25);
+        box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.45);
+      }
+
+      .atmospheric-ambient-blue {
+        animation: ambientPulseSlow 16s ease-in-out infinite alternate;
+      }
+      .atmospheric-ambient-orange {
+        animation: ambientPulseOrange 18s ease-in-out infinite alternate;
+      }
+      .weather-hero-icon {
+        animation: gentleFloat 5s ease-in-out infinite;
+      }
+      .sun-rays-spin {
+        transform-origin: 26px 24px;
+        animation: sunRaysPulse 3.5s ease-in-out infinite;
+      }
+      .radar-sweep-cone {
+        animation: radarSweep 4s linear infinite;
+        transform-origin: center center;
+      }
+      .solar-point-pulse {
+        animation: solarZenithPulse 2.8s ease-in-out infinite;
+        transform-origin: 118px 20px;
+      }
+      .shimmer-bar {
+        background-size: 200% 100%;
+        background-image: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.25) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        animation: shimmerGlow 3.5s infinite linear;
+      }
+
+      /* Accessibility: Respect Reduced Motion */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'surface-container-high': '#282742',
+              'secondary-fixed-dim': '#ffb68c',
+              'card-surface': '#2E323A',
+              'inverse-on-surface': '#2f2d49',
+              'neutral-700': '#302F4A',
+              'on-background': '#e3dfff',
+              surface: '#11102a',
+              error: '#ffb4ab',
+              'on-secondary': '#532200',
+              'error-container': '#93000a',
+              'on-secondary-fixed-variant': '#753400',
+              tertiary: '#c2c1ff',
+              'border-light': '#E0E4EA',
+              'neutral-200': '#D8D6E5',
+              'accent-blue-deep': '#271E99',
+              'outline-variant': '#454654',
+              'inverse-surface': '#e3dfff',
+              'on-primary': '#001999',
+              'surface-container-lowest': '#0c0b25',
+              'on-error-container': '#ffdad6',
+              'surface-container-low': '#1a1933',
+              'neutral-0': '#FFFFFF',
+              'surface-bright': '#373652',
+              'tertiary-container': '#5855c9',
+              'on-surface-variant': '#c5c5d7',
+              'on-surface': '#e3dfff',
+              'surface-container': '#1e1d37',
+              'primary-fixed': '#dfe0ff',
+              'primary-container': '#4255dc',
+              secondary: '#ffb68c',
+              'secondary-fixed': '#ffdbc9',
+              outline: '#8f8fa0',
+              primary: '#bcc2ff',
+              'on-secondary-container': '#572400',
+              'accent-orange': '#FF7A0A',
+              'surface-tint': '#bcc2ff',
+              'inverse-primary': '#3b4ed6',
+              background: '#11102a',
+              'accent-blue': '#4255DC',
+              'border-hairline': '#3C3B5E',
+              'surface-dim': '#11102a',
+              'on-tertiary-fixed-variant': '#3934aa',
+              'on-primary-fixed': '#000c61',
+              'neutral-300': '#ACACB7',
+              'on-error': '#690005',
+              'primary-fixed-dim': '#bcc2ff',
+              'on-tertiary': '#211594',
+              'surface-variant': '#33324e',
+              'tertiary-fixed': '#e2dfff',
+              'secondary-container': '#f87500',
+              'surface-container-highest': '#33324e',
+              'on-primary-container': '#dee0ff',
+              'neutral-800': '#262540',
+              'on-tertiary-container': '#e2dfff',
+              'on-secondary-fixed': '#321200',
+              'tertiary-fixed-dim': '#c2c1ff',
+              'neutral-600': '#3C3B5E',
+              'neutral-900': '#02012C',
+              'on-tertiary-fixed': '#0e006a',
+              'on-primary-fixed-variant': '#1c32be',
+            },
+            borderRadius: { DEFAULT: '0.25rem', lg: '0.5rem', xl: '0.75rem', full: '9999px' },
+            spacing: {
+              gutter: '1rem',
+              'space-lg': '1rem',
+              'space-xl': '1.5rem',
+              'space-md': '0.75rem',
+              'space-sm': '0.5rem',
+              'gutter-desktop': '1.5rem',
+              'gutter-mobile': '0.5rem',
+              margin: '1rem',
+              'space-xs': '0.25rem',
+              'margin-desktop': '3rem',
+              'margin-tablet': '2rem',
+            },
+            fontFamily: {
+              'display-hero-mobile': ['DM Sans'],
+              'interactive-label': ['DM Sans'],
+              'metric-italic': ['DM Sans'],
+              'body-default': ['DM Sans'],
+              'title-day': ['DM Sans'],
+              'display-hero': ['DM Sans'],
+              'label-caption': ['DM Sans'],
+              'headline-lg': ['DM Sans'],
+              'brand-title': ['Bricolage Grotesque'],
+              'headline-md': ['DM Sans'],
+              'metric-bold': ['DM Sans'],
+              'label-section': ['DM Sans'],
+              'title-hourly': ['DM Sans'],
+            },
+            fontSize: {
+              'display-hero-mobile': [
+                '56px',
+                { lineHeight: '60px', letterSpacing: '-1.5px', fontWeight: '600' },
+              ],
+              'interactive-label': ['16px', { lineHeight: '20px', fontWeight: '500' }],
+              'metric-italic': ['16px', { lineHeight: '20px', fontWeight: '600i' }],
+              'body-default': ['18px', { lineHeight: '28px', fontWeight: '300' }],
+              'title-day': ['18px', { lineHeight: '24px', fontWeight: '500' }],
+              'display-hero': [
+                '96px',
+                { lineHeight: '96px', letterSpacing: '-2px', fontWeight: '600' },
+              ],
+              'label-caption': [
+                '12px',
+                { lineHeight: '16px', letterSpacing: '0.5px', fontWeight: '500' },
+              ],
+              'headline-lg': [
+                '32px',
+                { lineHeight: '40px', letterSpacing: '-0.5px', fontWeight: '700' },
+              ],
+              'brand-title': [
+                '22px',
+                { lineHeight: '26px', letterSpacing: '-0.5px', fontWeight: '700' },
+              ],
+              'headline-md': ['24px', { lineHeight: '32px', fontWeight: '600' }],
+              'metric-bold': ['16px', { lineHeight: '20px', fontWeight: '700' }],
+              'label-section': ['14px', { lineHeight: '18px', fontWeight: '500' }],
+              'title-hourly': ['20px', { lineHeight: '24px', fontWeight: '500' }],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-background font-body-default text-body-default text-on-surface antialiased selection:bg-accent-blue/30 selection:text-neutral-0"
+  >
+    <header
+      class="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-border-hairline/20"
+    >
+      <div class="h-20 w-full px-margin-desktop flex items-center justify-between gap-space-lg">
+        <div class="flex items-center gap-space-xl">
+          <div
+            class="flex items-center gap-space-sm cursor-pointer group active:scale-95 transition-transform"
+          >
+            <div
+              class="w-10 h-10 rounded-lg bg-accent-blue flex items-center justify-center text-neutral-0 shadow-md group-hover:shadow-accent-blue/40 group-hover:scale-105 transition-all duration-300"
+            >
+              <span
+                class="material-symbols-outlined text-[24px] group-hover:rotate-45 transition-transform duration-500"
+                >air</span
+              >
+            </div>
+            <span class="font-brand-title text-brand-title text-neutral-0 tracking-tight"
+              >Weather Now</span
+            >
+          </div>
+          <nav
+            class="hidden lg:flex items-center gap-space-sm px-space-xs"
+            data-active-classes="bg-primary-container text-on-primary-container font-interactive-label text-interactive-label rounded-lg"
+          >
+            <a
+              aria-current="page"
+              class="px-space-md py-space-sm transition-all duration-200 bg-primary-container text-on-primary-container font-interactive-label text-interactive-label rounded-lg shadow-sm active:scale-95"
+              data-path="current-forecast"
+              href="#"
+              >Forecast</a
+            ><a
+              class="px-space-md py-space-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-200 font-interactive-label text-interactive-label active:scale-95"
+              data-path="radar-maps"
+              href="#"
+              >Radar &amp; Maps</a
+            ><a
+              class="px-space-md py-space-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all duration-200 font-interactive-label text-interactive-label active:scale-95"
+              data-path="historical-trends"
+              href="#"
+              >Historical</a
+            >
+          </nav>
+        </div>
+        <div class="flex-1 max-w-xl mx-space-lg hidden md:block">
+          <div class="relative flex items-center w-full group">
+            <span
+              class="material-symbols-outlined absolute left-space-md text-neutral-300 pointer-events-none text-[20px] group-focus-within:text-primary transition-colors"
+              >search</span
+            ><input
+              class="w-full pl-10 pr-space-md py-space-sm bg-neutral-700 hover:bg-neutral-700/80 text-on-surface placeholder-neutral-300 rounded-lg border border-border-hairline focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20 outline-none font-body-default text-interactive-label transition-all"
+              placeholder="Search city, coordinates, or zip code..."
+              type="text"
+            />
+            <div class="absolute right-space-sm flex items-center gap-space-xs">
+              <kbd
+                class="px-space-xs py-0.5 rounded bg-surface-container-low text-neutral-300 font-label-caption text-label-caption border border-border-hairline shadow-inner"
+                >⌘K</kbd
+              >
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-space-md">
+          <div class="relative">
+            <button
+              class="flex items-center gap-space-xs bg-neutral-700 hover:bg-surface-container-high px-space-md py-space-sm rounded-lg border border-border-hairline text-neutral-0 font-interactive-label text-interactive-label transition-all active:scale-95 hover:border-primary/40 shadow-sm"
+              id="unitToggleBtn"
+              title="Click to toggle Metric / Imperial"
+              type="button"
+            >
+              <span class="material-symbols-outlined text-[18px] text-accent-orange"
+                >thermostat</span
+              ><span id="unitToggleText">Metric (°C)</span
+              ><span class="material-symbols-outlined text-[18px] text-neutral-300">swap_vert</span>
+            </button>
+          </div>
+          <button
+            class="w-10 h-10 rounded-lg bg-neutral-700 hover:bg-surface-container-high border border-border-hairline flex items-center justify-center text-neutral-0 transition-all active:scale-90 hover:border-primary/40 shadow-sm relative group"
+            type="button"
+          >
+            <span
+              class="material-symbols-outlined text-[20px] group-hover:rotate-12 transition-transform"
+              >notifications</span
+            ><span
+              class="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent-orange ring-2 ring-surface"
+            ></span>
+          </button>
+          <div
+            class="w-8 h-8 rounded-full bg-primary hover:scale-105 active:scale-95 transition-transform flex items-center justify-center cursor-pointer shadow-md"
+          >
+            <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="w-full pt-20 bg-background min-h-screen">
+      <div class="flex flex-col w-full">
+        <!-- Atmospheric Glow Backdrop Containment -->
+        <div class="relative w-full px-margin-desktop py-space-xl overflow-hidden">
+          <!-- Subtle localized telemetry glow effects with breathing animation -->
+          <div
+            class="atmospheric-ambient-blue absolute -top-32 -left-20 w-96 h-96 bg-accent-blue/20 rounded-full blur-3xl pointer-events-none"
+          ></div>
+          <div
+            class="atmospheric-ambient-orange absolute top-48 right-10 w-80 h-80 bg-accent-orange/15 rounded-full blur-3xl pointer-events-none"
+          ></div>
+          <!-- Telemetry Status Ribbon & Live Breadcrumbs -->
+          <div class="w-full flex flex-wrap items-center justify-between gap-space-md mb-space-xl">
+            <div class="flex items-center gap-space-sm">
+              <span class="flex h-2.5 w-2.5 relative">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-orange opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent-orange shadow-[0_0_8px_rgba(255,122,10,0.8)]"
+                ></span>
+              </span>
+              <span
+                class="font-label-section text-label-section text-neutral-300 tracking-wider uppercase"
+                >Live Ground Station Doppler #4092</span
+              >
+              <span class="text-neutral-600">•</span>
+              <span
+                class="font-label-caption text-label-caption text-neutral-300 flex items-center gap-1"
+              >
+                <span
+                  class="material-symbols-outlined text-[14px] text-tertiary animate-spin"
+                  style="animation-duration: 9s"
+                  >sync</span
+                >
+                Sync cycle: 30s
+              </span>
+            </div>
+            <!-- Interactive Quick Control Capsule Bar -->
+            <div
+              class="flex items-center gap-space-sm bg-neutral-800 p-1.5 rounded-xl shadow-lg border border-border-hairline/40"
+            >
+              <button
+                class="flex items-center gap-space-xs px-space-md py-1.5 rounded-lg text-neutral-200 hover:text-neutral-0 hover:bg-neutral-700 transition-all active:scale-95 font-interactive-label text-interactive-label group"
+                id="radarBtn"
+              >
+                <span
+                  class="material-symbols-outlined text-[18px] text-primary group-hover:rotate-90 transition-transform duration-500"
+                  >radar</span
+                >
+                <span>Live Radar</span>
+              </button>
+              <div class="w-px h-5 bg-neutral-700"></div>
+              <button
+                class="flex items-center gap-space-xs px-space-md py-1.5 rounded-lg bg-surface-container-high text-secondary font-interactive-label text-interactive-label shadow-sm hover:brightness-110 active:scale-95 transition-all"
+                id="alertNoticeBtn"
+              >
+                <span class="material-symbols-outlined text-[18px] animate-pulse">bolt</span>
+                <span>No Severe Hazards</span>
+              </button>
+            </div>
+          </div>
+          <!-- Section 1: Main City Header -->
+          <header
+            class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-xl pb-space-lg border-b border-border-hairline/20"
+          >
+            <div class="space-y-1">
+              <div class="flex items-center gap-space-sm">
+                <span
+                  class="material-symbols-outlined text-primary text-[28px] animate-bounce"
+                  style="animation-duration: 2.5s"
+                  >location_on</span
+                >
+                <h1
+                  class="font-brand-title text-display-hero-mobile md:text-headline-lg lg:text-display-hero text-neutral-0 tracking-tight leading-none"
+                >
+                  Berlin, Germany
+                </h1>
+                <span
+                  class="px-space-sm py-0.5 rounded-lg bg-neutral-800 text-tertiary font-label-caption text-label-caption uppercase tracking-wider border border-border-hairline/40 hover:border-tertiary/50 transition-colors"
+                  >Metar: EDDB</span
+                >
+              </div>
+              <p
+                class="font-body-default text-body-default text-neutral-300 flex items-center gap-space-xs pl-1"
+              >
+                <span>Thursday, 24 October 2025</span>
+                <span class="text-neutral-600">•</span>
+                <span>14:42 CEST</span>
+                <span class="text-neutral-600">•</span>
+                <span class="text-secondary font-interactive-label flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Telemetry updated 2 mins ago
+                </span>
+              </p>
+            </div>
+            <!-- Station Telemetry Pill Set -->
+            <div class="flex items-center gap-space-xs flex-wrap">
+              <div
+                class="interactive-card bg-neutral-800 px-space-md py-space-sm rounded-xl flex items-center gap-space-xs shadow-sm cursor-default"
+              >
+                <span class="material-symbols-outlined text-neutral-300 text-[18px]">compress</span>
+                <div class="flex flex-col">
+                  <span class="font-label-caption text-label-caption text-neutral-300 leading-none"
+                    >Barometer</span
+                  >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0">1014.8 hPa</span>
+                </div>
+              </div>
+              <div
+                class="interactive-card bg-neutral-800 px-space-md py-space-sm rounded-xl flex items-center gap-space-xs shadow-sm cursor-default"
+              >
+                <span class="material-symbols-outlined text-neutral-300 text-[18px]"
+                  >visibility</span
+                >
+                <div class="flex flex-col">
+                  <span class="font-label-caption text-label-caption text-neutral-300 leading-none"
+                    >Visibility</span
+                  >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0">10.0 km</span>
+                </div>
+              </div>
+              <div
+                class="interactive-card bg-neutral-800 px-space-md py-space-sm rounded-xl flex items-center gap-space-xs shadow-sm cursor-default"
+              >
+                <span class="material-symbols-outlined text-neutral-300 text-[18px]">cloud</span>
+                <div class="flex flex-col">
+                  <span class="font-label-caption text-label-caption text-neutral-300 leading-none"
+                    >Cloud Base</span
+                  >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0">1,850 m</span>
+                </div>
+              </div>
+            </div>
+          </header>
+          <!-- Bento Core Grid: Hero & Critical Metrics -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg mb-space-xl">
+            <!-- Section 2: Hero Current Weather Card (Left Quadrant, 5 cols) -->
+            <div
+              class="interactive-card lg:col-span-5 bg-card-surface rounded-xl p-space-xl flex flex-col justify-between shadow-xl relative overflow-hidden group border border-border-hairline/40"
+            >
+              <!-- Dynamic Animated thermal gradient highlight in background -->
+              <div
+                class="absolute -right-16 -top-16 w-60 h-60 bg-accent-blue/25 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700 ease-out pointer-events-none"
+              ></div>
+              <div
+                class="absolute -bottom-10 -left-10 w-48 h-48 bg-accent-orange/10 rounded-full blur-2xl group-hover:scale-110 transition-transform duration-700 ease-out pointer-events-none"
+              ></div>
+              <div class="relative z-10 flex items-start justify-between">
+                <div>
+                  <span
+                    class="px-space-md py-1 rounded-full bg-neutral-700/80 text-neutral-200 font-label-section text-label-section inline-flex items-center gap-1.5 mb-space-md border border-neutral-600/40 shadow-sm"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-accent-orange animate-pulse"></span>
+                    Current Condition
+                  </span>
+                  <h2
+                    class="font-headline-md text-headline-md text-neutral-0 group-hover:text-primary transition-colors"
+                  >
+                    Scattered Stratocumulus
+                  </h2>
+                  <p class="font-body-default text-body-default text-neutral-300 mt-1">
+                    Light southwesterly breeze with intermittent sunshine
+                  </p>
+                </div>
+                <!-- Weather Graphic Module Canvas with Gentle Floating Animation -->
+                <div
+                  class="weather-hero-icon w-20 h-20 rounded-xl bg-neutral-0 flex items-center justify-center shadow-lg p-2 shrink-0 group-hover:shadow-accent-blue/30 transition-all"
+                >
+                  <!-- Inline SVG Atmospheric Icon: Sun with Dynamic Passing Cloud -->
+                  <svg
+                    class="w-16 h-16"
+                    fill="none"
+                    viewbox="0 0 64 64"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="26" cy="24" fill="#f87500" r="12"></circle>
+                    <g
+                      class="sun-rays-spin"
+                      stroke="#ffb68c"
+                      stroke-linecap="round"
+                      stroke-width="2.5"
+                    >
+                      <line x1="26" x2="26" y1="6" y2="2"></line>
+                      <line x1="26" x2="26" y1="46" y2="42"></line>
+                      <line x1="8" x2="4" y1="24" y2="24"></line>
+                      <line x1="48" x2="44" y1="24" y2="24"></line>
+                      <line x1="13.27" x2="10.44" y1="11.27" y2="8.44"></line>
+                      <line x1="38.73" x2="41.56" y1="36.73" y2="39.56"></line>
+                      <line x1="13.27" x2="10.44" y1="36.73" y2="39.56"></line>
+                      <line x1="38.73" x2="41.56" y1="11.27" y2="8.44"></line>
+                    </g>
+                    <path
+                      d="M48 48H22C16.48 48 12 43.52 12 38C12 32.74 16.06 28.43 21.22 28.04C22.68 22.25 27.89 18 34 18C41.34 18 47.36 23.63 47.95 30.82C52.44 31.39 56 35.28 56 40C56 44.42 52.42 48 48 48Z"
+                      fill="#3C3B5E"
+                    ></path>
+                    <path
+                      d="M46 46H24C19.58 46 16 42.42 16 38C16 33.79 19.25 30.34 23.38 30.03C24.54 25.4 28.71 22 33.6 22C39.47 22 44.29 26.5 44.76 32.26C48.35 32.72 51.2 35.83 51.2 39.6C51.2 43.13 48.34 46 46 46Z"
+                      fill="#4255DC"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <!-- Grand Thermal Hero Readout -->
+              <div class="relative z-10 my-space-xl flex items-baseline gap-space-md">
+                <div
+                  class="font-brand-title text-display-hero text-neutral-0 tracking-tight leading-none drop-shadow-md"
+                >
+                  <span class="temp-val" data-c="21">21</span
+                  ><span class="text-accent-orange text-display-hero-mobile unit-symbol">°C</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-title-day text-title-day text-neutral-0"
+                    >Feels like <span class="temp-val" data-c="20.4">20.4</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="flex items-center gap-space-xs font-metric-bold text-metric-bold text-neutral-300 mt-1"
+                  >
+                    <span class="flex items-center text-secondary"
+                      ><span
+                        class="material-symbols-outlined text-[16px] animate-bounce"
+                        style="animation-duration: 2s"
+                        >arrow_upward</span
+                      ><span class="temp-val" data-c="24">24</span
+                      ><span class="unit-deg">°</span></span
+                    >
+                    <span class="text-neutral-600">|</span>
+                    <span class="flex items-center text-tertiary"
+                      ><span class="material-symbols-outlined text-[16px]">arrow_downward</span
+                      ><span class="temp-val" data-c="14">14</span
+                      ><span class="unit-deg">°</span></span
+                    >
+                  </div>
+                </div>
+              </div>
+              <!-- Micro Summary Strip & Sky Gauge -->
+              <div
+                class="relative z-10 bg-neutral-800/80 backdrop-blur rounded-lg p-space-md flex items-center justify-between border border-border-hairline/30 group-hover:border-primary/30 transition-colors"
+              >
+                <div class="flex items-center gap-space-xs">
+                  <span class="material-symbols-outlined text-secondary text-[20px] animate-pulse"
+                    >wb_sunny</span
+                  >
+                  <span class="font-label-section text-label-section text-neutral-200"
+                    >Daylight remaining: 4h 18m</span
+                  >
+                </div>
+                <span
+                  class="font-label-caption text-label-caption px-space-sm py-0.5 rounded bg-neutral-700 text-neutral-0 font-metric-bold shadow-sm"
+                  >Optimal Comfort</span
+                >
+              </div>
+            </div>
+            <!-- Section 3: Key Weather Metrics Grid (Right Quadrant, 7 cols) -->
+            <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
+              <!-- Tile 1: Wind Speed & Direction -->
+              <div
+                class="interactive-card bg-neutral-800 rounded-xl p-space-lg flex flex-col justify-between shadow-md hover:bg-neutral-700/90 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="font-label-section text-label-section text-neutral-300 group-hover:text-neutral-0 transition-colors"
+                    >Wind Dynamics</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-accent-blue text-[20px] group-hover:rotate-180 transition-transform duration-700"
+                    >air</span
+                  >
+                </div>
+                <div class="my-space-md flex items-baseline gap-space-xs">
+                  <span
+                    class="font-headline-lg text-headline-lg text-neutral-0 group-hover:scale-105 transition-transform origin-left"
+                    >14</span
+                  >
+                  <span class="font-interactive-label text-interactive-label text-neutral-300"
+                    >km/h</span
+                  >
+                </div>
+                <div
+                  class="flex items-center justify-between text-neutral-300 font-label-caption text-label-caption bg-card-surface/50 group-hover:bg-card-surface/80 rounded-lg px-2.5 py-1.5 transition-colors"
+                >
+                  <div class="flex items-center gap-1.5">
+                    <span
+                      class="material-symbols-outlined text-secondary text-[16px] rotate-[315deg] group-hover:rotate-[360deg] transition-transform duration-500"
+                      >navigation</span
+                    >
+                    <span class="text-neutral-0 font-metric-bold">NW (312°)</span>
+                  </div>
+                  <span>Gusts to 22 km/h</span>
+                </div>
+              </div>
+              <!-- Tile 2: Humidity & Dew Point -->
+              <div
+                class="interactive-card bg-neutral-800 rounded-xl p-space-lg flex flex-col justify-between shadow-md hover:bg-neutral-700/90 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="font-label-section text-label-section text-neutral-300 group-hover:text-neutral-0 transition-colors"
+                    >Humidity / Dew</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-tertiary text-[20px] group-hover:scale-110 transition-transform"
+                    >humidity_percentage</span
+                  >
+                </div>
+                <div class="my-space-md flex items-baseline gap-space-xs">
+                  <span
+                    class="font-headline-lg text-headline-lg text-neutral-0 group-hover:scale-105 transition-transform origin-left"
+                    >62</span
+                  >
+                  <span class="font-interactive-label text-interactive-label text-neutral-300"
+                    >%</span
+                  >
+                </div>
+                <div class="space-y-1">
+                  <div class="w-full bg-neutral-900 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      class="bg-accent-blue h-full rounded-full transition-all duration-1000 group-hover:brightness-125"
+                      style="width: 62%"
+                    ></div>
+                  </div>
+                  <div
+                    class="flex justify-between font-label-caption text-label-caption text-neutral-300 pt-0.5"
+                  >
+                    <span
+                      >Dew point: <span class="temp-val" data-c="13.5">13.5</span
+                      ><span class="unit-symbol">°C</span></span
+                    >
+                    <span class="text-neutral-200 font-medium">Balanced</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Tile 3: Precipitation & Probability -->
+              <div
+                class="interactive-card bg-neutral-800 rounded-xl p-space-lg flex flex-col justify-between shadow-md hover:bg-neutral-700/90 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="font-label-section text-label-section text-neutral-300 group-hover:text-neutral-0 transition-colors"
+                    >Precipitation</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-accent-blue text-[20px] group-hover:translate-y-0.5 transition-transform"
+                    >rainy</span
+                  >
+                </div>
+                <div class="my-space-md flex items-baseline gap-space-xs">
+                  <span
+                    class="font-headline-lg text-headline-lg text-neutral-0 group-hover:scale-105 transition-transform origin-left"
+                    >12</span
+                  >
+                  <span class="font-interactive-label text-interactive-label text-neutral-300"
+                    >%</span
+                  >
+                </div>
+                <div
+                  class="flex items-center justify-between font-label-caption text-label-caption bg-card-surface/50 group-hover:bg-card-surface/80 rounded-lg px-2.5 py-1.5 transition-colors"
+                >
+                  <span class="text-neutral-300">Liquid accumulation</span>
+                  <span class="text-neutral-0 font-metric-bold">0.2 mm / 24h</span>
+                </div>
+              </div>
+              <!-- Tile 4: UV Index -->
+              <div
+                class="interactive-card bg-neutral-800 rounded-xl p-space-lg flex flex-col justify-between shadow-md hover:bg-neutral-700/90 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="font-label-section text-label-section text-neutral-300 group-hover:text-neutral-0 transition-colors"
+                    >UV Telemetry</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-accent-orange text-[20px] group-hover:rotate-45 transition-transform duration-500"
+                    >light_mode</span
+                  >
+                </div>
+                <div class="my-space-md flex items-baseline gap-space-sm">
+                  <span
+                    class="font-headline-lg text-headline-lg text-neutral-0 group-hover:scale-105 transition-transform origin-left"
+                    >4.1</span
+                  >
+                  <span class="font-metric-bold text-metric-bold text-secondary">Moderate</span>
+                </div>
+                <div class="space-y-1">
+                  <div class="w-full bg-neutral-900 rounded-full h-1.5 flex gap-1">
+                    <div class="bg-accent-blue h-full w-1/3 rounded-full"></div>
+                    <div class="bg-accent-orange h-full w-1/3 rounded-full"></div>
+                    <div class="bg-neutral-700 h-full w-1/3 rounded-full"></div>
+                  </div>
+                  <p class="font-label-caption text-label-caption text-neutral-300 pt-0.5">
+                    Sun protection safe until 17:15
+                  </p>
+                </div>
+              </div>
+              <!-- Tile 5: Air Quality Index (AQI) -->
+              <div
+                class="interactive-card bg-neutral-800 rounded-xl p-space-lg flex flex-col justify-between shadow-md hover:bg-neutral-700/90 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="font-label-section text-label-section text-neutral-300 group-hover:text-neutral-0 transition-colors"
+                    >Air Purity (AQI)</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-primary text-[20px] group-hover:scale-110 transition-transform"
+                    >filter_drama</span
+                  >
+                </div>
+                <div class="my-space-md flex items-baseline gap-space-sm">
+                  <span
+                    class="font-headline-lg text-headline-lg text-neutral-0 group-hover:scale-105 transition-transform origin-left"
+                    >32</span
+                  >
+                  <span
+                    class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-caption text-label-caption uppercase tracking-wider font-metric-bold shadow-sm"
+                    >Good</span
+                  >
+                </div>
+                <div
+                  class="flex items-center justify-between font-label-caption text-label-caption text-neutral-300 bg-card-surface/50 group-hover:bg-card-surface/80 rounded-lg px-2.5 py-1.5 transition-colors"
+                >
+                  <span>PM2.5: 7.2 µg/m³</span>
+                  <span>PM10: 14 µg/m³</span>
+                </div>
+              </div>
+              <!-- Tile 6: Solar Cycle & Daylight Arc -->
+              <div
+                class="interactive-card bg-neutral-800 rounded-xl p-space-lg flex flex-col justify-between shadow-md hover:bg-neutral-700/90 cursor-pointer group"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="font-label-section text-label-section text-neutral-300 group-hover:text-neutral-0 transition-colors"
+                    >Solar Elevation Arc</span
+                  >
+                  <span
+                    class="material-symbols-outlined text-secondary text-[20px] group-hover:scale-110 transition-transform"
+                    >wb_twilight</span
+                  >
+                </div>
+                <!-- Daylight Arc Graphic Visualization with Pulsing Sun Zenith -->
+                <div class="my-1 flex items-center justify-center">
+                  <svg class="w-48 h-16 overflow-visible" viewbox="0 0 160 55">
+                    <!-- Dashed Horizon Ground Line -->
+                    <line
+                      stroke="#3C3B5E"
+                      stroke-dasharray="3 3"
+                      stroke-width="1.5"
+                      x1="10"
+                      x2="150"
+                      y1="50"
+                      y2="50"
+                    ></line>
+                    <!-- Arc Path -->
+                    <path
+                      d="M 15 50 A 65 38 0 0 1 145 50"
+                      fill="none"
+                      stroke="#302F4A"
+                      stroke-width="3"
+                    ></path>
+                    <!-- Lit Arc Segment (passed daylight) -->
+                    <path
+                      d="M 15 50 A 65 38 0 0 1 118 20"
+                      fill="none"
+                      stroke="#FF7A0A"
+                      stroke-linecap="round"
+                      stroke-width="3.5"
+                    ></path>
+                    <!-- Current Sun Position Marker with pulse -->
+                    <g class="solar-point-pulse cursor-pointer">
+                      <circle cx="118" cy="20" fill="#FF7A0A" opacity="0.4" r="9"></circle>
+                      <circle cx="118" cy="20" fill="#f87500" r="5"></circle>
+                    </g>
+                  </svg>
+                </div>
+                <div
+                  class="flex items-center justify-between font-label-caption text-label-caption text-neutral-300"
+                >
+                  <div class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px] text-secondary"
+                      >qr_code_2</span
+                    >
+                    <span>07:44</span>
+                  </div>
+                  <span
+                    class="font-metric-bold text-neutral-0 group-hover:text-accent-orange transition-colors"
+                    >Zenith 13:02</span
+                  >
+                  <div class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px] text-accent-orange"
+                      >redeem</span
+                    >
+                    <span>18:02</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Section 4: Hourly Forecast Section -->
+          <section
+            class="mb-space-xl bg-neutral-800/60 rounded-xl p-space-xl shadow-lg border border-border-hairline/30 backdrop-blur"
+          >
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md mb-space-lg"
+            >
+              <div>
+                <h3 class="font-headline-md text-headline-md text-neutral-0">
+                  Hourly Timeline &amp; Precipitation Probability
+                </h3>
+                <p class="font-body-default text-body-default text-neutral-300">
+                  Synchronized 24-hour meteorological projection stream
+                </p>
+              </div>
+              <!-- Period View Switches with Interactive State Management -->
+              <div
+                class="flex items-center gap-space-xs bg-neutral-800 p-1 rounded-lg self-start border border-border-hairline/40 shadow-inner"
+                id="hourlyTimelineTabs"
+              >
+                <button
+                  class="px-space-md py-1 rounded bg-accent-blue text-neutral-0 font-interactive-label text-interactive-label shadow-sm transition-all active:scale-95"
+                  data-tab="12h"
+                >
+                  Next 12 Hours
+                </button>
+                <button
+                  class="px-space-md py-1 rounded text-neutral-300 hover:text-neutral-0 font-interactive-label text-interactive-label transition-all active:scale-95 hover:bg-neutral-700/60"
+                  data-tab="24h"
+                >
+                  24 Hours
+                </button>
+                <button
+                  class="px-space-md py-1 rounded text-neutral-300 hover:text-neutral-0 font-interactive-label text-interactive-label transition-all active:scale-95 hover:bg-neutral-700/60"
+                  data-tab="wind"
+                >
+                  Wind Vector
+                </button>
+              </div>
+            </div>
+            <!-- Horizontal Scrollable Hourly Card Rail with Fluid Card Interactions -->
+            <div
+              class="w-full overflow-x-auto pb-space-sm flex gap-space-md scroll-smooth"
+              id="hourlyCardsContainer"
+            >
+              <!-- Hourly Item 1 (Now) -->
+              <div
+                class="min-w-[145px] flex-1 bg-surface-container-high rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md transition-all duration-300 hover:scale-105 hover:bg-surface-bright/80 cursor-pointer border border-primary/30"
+              >
+                <span
+                  class="font-title-hourly text-title-hourly text-accent-orange font-metric-bold"
+                  >Now</span
+                >
+                <div
+                  class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-accent-orange"
+                    >wb_sunny</span
+                  >
+                </div>
+                <span class="font-title-day text-title-day text-neutral-0 font-metric-bold"
+                  ><span class="temp-val" data-c="21">21</span><span class="unit-deg">°</span></span
+                >
+                <!-- Rain prob bar container -->
+                <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                  <div
+                    class="bg-accent-blue h-full transition-all duration-500"
+                    style="width: 10%"
+                  ></div>
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-300">10% Rain</span>
+              </div>
+              <!-- Hourly Item 2 -->
+              <div
+                class="min-w-[145px] flex-1 bg-neutral-700 hover:bg-surface-bright/70 transition-all duration-300 hover:scale-105 cursor-pointer rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-sm border border-transparent hover:border-primary/20"
+              >
+                <span class="font-title-hourly text-title-hourly text-neutral-0">15:00</span>
+                <div
+                  class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-accent-blue"
+                    >partly_cloudy_day</span
+                  >
+                </div>
+                <span class="font-title-day text-title-day text-neutral-0 font-metric-bold"
+                  ><span class="temp-val" data-c="22">22</span><span class="unit-deg">°</span></span
+                >
+                <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                  <div class="bg-accent-blue h-full" style="width: 15%"></div>
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-300">15% Rain</span>
+              </div>
+              <!-- Hourly Item 3 -->
+              <div
+                class="min-w-[145px] flex-1 bg-neutral-700 hover:bg-surface-bright/70 transition-all duration-300 hover:scale-105 cursor-pointer rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-sm border border-transparent hover:border-primary/20"
+              >
+                <span class="font-title-hourly text-title-hourly text-neutral-0">16:00</span>
+                <div
+                  class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-accent-blue"
+                    >partly_cloudy_day</span
+                  >
+                </div>
+                <span class="font-title-day text-title-day text-neutral-0 font-metric-bold"
+                  ><span class="temp-val" data-c="21">21</span><span class="unit-deg">°</span></span
+                >
+                <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                  <div class="bg-accent-blue h-full" style="width: 20%"></div>
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-300">20% Rain</span>
+              </div>
+              <!-- Hourly Item 4 -->
+              <div
+                class="min-w-[145px] flex-1 bg-neutral-700 hover:bg-surface-bright/70 transition-all duration-300 hover:scale-105 cursor-pointer rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-sm border border-transparent hover:border-primary/20"
+              >
+                <span class="font-title-hourly text-title-hourly text-neutral-0">17:00</span>
+                <div
+                  class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-neutral-800">cloud</span>
+                </div>
+                <span class="font-title-day text-title-day text-neutral-0 font-metric-bold"
+                  ><span class="temp-val" data-c="19">19</span><span class="unit-deg">°</span></span
+                >
+                <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                  <div class="bg-accent-blue h-full" style="width: 45%"></div>
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-300">45% Rain</span>
+              </div>
+              <!-- Hourly Item 5 -->
+              <div
+                class="min-w-[145px] flex-1 bg-neutral-700 hover:bg-surface-bright/70 transition-all duration-300 hover:scale-105 cursor-pointer rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-sm border border-transparent hover:border-primary/20"
+              >
+                <span class="font-title-hourly text-title-hourly text-neutral-0">18:00</span>
+                <div
+                  class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-accent-blue">rainy</span>
+                </div>
+                <span class="font-title-day text-title-day text-neutral-0 font-metric-bold"
+                  ><span class="temp-val" data-c="18">18</span><span class="unit-deg">°</span></span
+                >
+                <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                  <div class="bg-accent-blue h-full" style="width: 70%"></div>
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-300">70% Rain</span>
+              </div>
+              <!-- Hourly Item 6 -->
+              <div
+                class="min-w-[145px] flex-1 bg-neutral-700 hover:bg-surface-bright/70 transition-all duration-300 hover:scale-105 cursor-pointer rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-sm border border-transparent hover:border-primary/20"
+              >
+                <span class="font-title-hourly text-title-hourly text-neutral-0">19:00</span>
+                <div
+                  class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-tertiary"
+                    >water_drop</span
+                  >
+                </div>
+                <span class="font-title-day text-title-day text-neutral-0 font-metric-bold"
+                  ><span class="temp-val" data-c="17">17</span><span class="unit-deg">°</span></span
+                >
+                <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                  <div class="bg-accent-blue h-full" style="width: 60%"></div>
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-300">60% Rain</span>
+              </div>
+              <!-- Hourly Item 7 -->
+              <div
+                class="min-w-[145px] flex-1 bg-neutral-700 hover:bg-surface-bright/70 transition-all duration-300 hover:scale-105 cursor-pointer rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-sm border border-transparent hover:border-primary/20"
+              >
+                <span class="font-title-hourly text-title-hourly text-neutral-0">20:00</span>
+                <div
+                  class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm"
+                >
+                  <span class="material-symbols-outlined text-[24px] text-neutral-800"
+                    >nightlight_round</span
+                  >
+                </div>
+                <span class="font-title-day text-title-day text-neutral-0 font-metric-bold"
+                  ><span class="temp-val" data-c="16">16</span><span class="unit-deg">°</span></span
+                >
+                <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                  <div class="bg-accent-blue h-full" style="width: 25%"></div>
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-300">25% Rain</span>
+              </div>
+            </div>
+          </section>
+          <!-- Section 5: 7-Day Forecast Section -->
+          <section class="mb-space-xl">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md mb-space-lg"
+            >
+              <div>
+                <h3 class="font-headline-md text-headline-md text-neutral-0">
+                  7-Day Extended Outlook
+                </h3>
+                <p class="font-body-default text-body-default text-neutral-300">
+                  Synoptic pressure wave modeling for North-Central Europe
+                </p>
+              </div>
+              <!-- Days Selector Dropdown Menu Mockup Component -->
+              <div class="relative">
+                <button
+                  class="flex items-center gap-space-sm bg-neutral-800 hover:bg-neutral-700 text-neutral-0 px-space-md py-2 rounded-lg font-interactive-label text-interactive-label shadow-sm transition-all active:scale-95 border border-border-hairline/40 hover:border-tertiary/40"
+                  id="daySelectorBtn"
+                >
+                  <span class="material-symbols-outlined text-[18px] text-tertiary"
+                    >calendar_view_week</span
+                  >
+                  <span id="selectedDaysLabel">View: Next 7 Days</span>
+                  <span
+                    class="material-symbols-outlined text-[18px] text-neutral-300 transition-transform duration-200"
+                    id="daySelectorChevron"
+                    >expand_more</span
+                  >
+                </button>
+                <!-- Dropdown flyout panel with smooth transition -->
+                <div
+                  class="hidden absolute right-0 mt-2 w-56 bg-neutral-800 rounded-xl p-2 shadow-2xl z-30 space-y-1 border border-border-hairline/60 backdrop-blur-xl"
+                  id="daysDropdownPanel"
+                >
+                  <div
+                    class="px-2 py-1 font-label-section text-label-section text-neutral-300 uppercase tracking-wider text-xs"
+                  >
+                    Forecast Span
+                  </div>
+                  <button
+                    class="dropdown-item w-full text-left flex items-center justify-between px-space-md py-2 rounded-lg bg-neutral-700 text-neutral-0 font-interactive-label text-interactive-label hover:bg-surface-container-high transition-colors"
+                    data-span="7"
+                  >
+                    <span>Next 7 Days</span>
+                    <span class="material-symbols-outlined text-primary text-[16px] check-icon"
+                      >check</span
+                    >
+                  </button>
+                  <button
+                    class="dropdown-item w-full text-left flex items-center justify-between px-space-md py-2 rounded-lg text-neutral-200 font-interactive-label text-interactive-label hover:bg-neutral-700 transition-colors"
+                    data-span="10"
+                  >
+                    <span>Next 10 Days</span>
+                    <span
+                      class="material-symbols-outlined text-primary text-[16px] check-icon hidden"
+                      >check</span
+                    >
+                  </button>
+                  <button
+                    class="dropdown-item w-full text-left flex items-center justify-between px-space-md py-2 rounded-lg text-neutral-200 font-interactive-label text-interactive-label hover:bg-neutral-700 transition-colors"
+                    data-span="14"
+                  >
+                    <span>Next 14 Days</span>
+                    <span
+                      class="material-symbols-outlined text-primary text-[16px] check-icon hidden"
+                      >check</span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- 7 Day Cards Grid (Weather Cards with micro-lift and animated thermal gradient bar) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-space-md">
+              <!-- Day 1: Today -->
+              <div
+                class="interactive-card bg-card-surface rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md cursor-pointer group"
+              >
+                <span
+                  class="font-title-day text-title-day text-secondary font-metric-bold group-hover:scale-105 transition-transform"
+                  >Today</span
+                >
+                <span class="font-label-caption text-label-caption text-neutral-300">24 Oct</span>
+                <!-- Illustration Box Tile -->
+                <div
+                  class="w-16 h-16 rounded-xl bg-neutral-0 flex items-center justify-center p-2 shadow-sm my-1 group-hover:shadow-secondary/30 transition-shadow"
+                >
+                  <span
+                    class="material-symbols-outlined text-[36px] text-accent-orange group-hover:rotate-12 transition-transform duration-300"
+                    >partly_cloudy_day</span
+                  >
+                </div>
+                <span
+                  class="font-label-caption text-label-caption text-neutral-200 text-center font-metric-bold"
+                  >Scattered</span
+                >
+                <!-- Temp Scale Bar with Shimmer -->
+                <div
+                  class="w-full flex items-center justify-between mt-2 pt-2 bg-neutral-800/40 rounded px-2 py-1 group-hover:bg-neutral-800/70 transition-colors"
+                >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0"
+                    ><span class="temp-val" data-c="24">24</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="w-12 h-1 bg-gradient-to-r from-tertiary to-secondary rounded-full relative overflow-hidden"
+                  >
+                    <div class="absolute inset-0 shimmer-bar"></div>
+                  </div>
+                  <span class="font-metric-bold text-metric-bold text-neutral-300"
+                    ><span class="temp-val" data-c="14">14</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                </div>
+              </div>
+              <!-- Day 2: Fri -->
+              <div
+                class="interactive-card bg-card-surface rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md cursor-pointer group"
+              >
+                <span
+                  class="font-title-day text-title-day text-neutral-0 group-hover:text-primary transition-colors"
+                  >Fri</span
+                >
+                <span class="font-label-caption text-label-caption text-neutral-300">25 Oct</span>
+                <div
+                  class="w-16 h-16 rounded-xl bg-neutral-0 flex items-center justify-center p-2 shadow-sm my-1 group-hover:shadow-accent-blue/30 transition-shadow"
+                >
+                  <span
+                    class="material-symbols-outlined text-[36px] text-accent-blue group-hover:translate-y-0.5 transition-transform"
+                    >rainy</span
+                  >
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-200 text-center"
+                  >Light Rain</span
+                >
+                <div
+                  class="w-full flex items-center justify-between mt-2 pt-2 bg-neutral-800/40 rounded px-2 py-1 group-hover:bg-neutral-800/70 transition-colors"
+                >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0"
+                    ><span class="temp-val" data-c="19">19</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="w-12 h-1 bg-gradient-to-r from-tertiary to-accent-blue rounded-full relative overflow-hidden"
+                  >
+                    <div class="absolute inset-0 shimmer-bar"></div>
+                  </div>
+                  <span class="font-metric-bold text-metric-bold text-neutral-300"
+                    ><span class="temp-val" data-c="12">12</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                </div>
+              </div>
+              <!-- Day 3: Sat -->
+              <div
+                class="interactive-card bg-card-surface rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md cursor-pointer group"
+              >
+                <span
+                  class="font-title-day text-title-day text-neutral-0 group-hover:text-secondary transition-colors"
+                  >Sat</span
+                >
+                <span class="font-label-caption text-label-caption text-neutral-300">26 Oct</span>
+                <div
+                  class="w-16 h-16 rounded-xl bg-neutral-0 flex items-center justify-center p-2 shadow-sm my-1 group-hover:shadow-secondary/30 transition-shadow"
+                >
+                  <span
+                    class="material-symbols-outlined text-[36px] text-secondary group-hover:rotate-45 transition-transform duration-500"
+                    >wb_sunny</span
+                  >
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-200 text-center"
+                  >Clear Sky</span
+                >
+                <div
+                  class="w-full flex items-center justify-between mt-2 pt-2 bg-neutral-800/40 rounded px-2 py-1 group-hover:bg-neutral-800/70 transition-colors"
+                >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0"
+                    ><span class="temp-val" data-c="22">22</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="w-12 h-1 bg-gradient-to-r from-tertiary to-secondary rounded-full relative overflow-hidden"
+                  >
+                    <div class="absolute inset-0 shimmer-bar"></div>
+                  </div>
+                  <span class="font-metric-bold text-metric-bold text-neutral-300"
+                    ><span class="temp-val" data-c="11">11</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                </div>
+              </div>
+              <!-- Day 4: Sun -->
+              <div
+                class="interactive-card bg-card-surface rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md cursor-pointer group"
+              >
+                <span
+                  class="font-title-day text-title-day text-neutral-0 group-hover:text-accent-orange transition-colors"
+                  >Sun</span
+                >
+                <span class="font-label-caption text-label-caption text-neutral-300">27 Oct</span>
+                <div
+                  class="w-16 h-16 rounded-xl bg-neutral-0 flex items-center justify-center p-2 shadow-sm my-1 group-hover:shadow-accent-orange/30 transition-shadow"
+                >
+                  <span
+                    class="material-symbols-outlined text-[36px] text-accent-orange group-hover:scale-110 transition-transform"
+                    >bolt</span
+                  >
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-200 text-center"
+                  >T-Storms</span
+                >
+                <div
+                  class="w-full flex items-center justify-between mt-2 pt-2 bg-neutral-800/40 rounded px-2 py-1 group-hover:bg-neutral-800/70 transition-colors"
+                >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0"
+                    ><span class="temp-val" data-c="20">20</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="w-12 h-1 bg-gradient-to-r from-tertiary to-accent-orange rounded-full relative overflow-hidden"
+                  >
+                    <div class="absolute inset-0 shimmer-bar"></div>
+                  </div>
+                  <span class="font-metric-bold text-metric-bold text-neutral-300"
+                    ><span class="temp-val" data-c="13">13</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                </div>
+              </div>
+              <!-- Day 5: Mon -->
+              <div
+                class="interactive-card bg-card-surface rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md cursor-pointer group"
+              >
+                <span
+                  class="font-title-day text-title-day text-neutral-0 group-hover:text-neutral-200 transition-colors"
+                  >Mon</span
+                >
+                <span class="font-label-caption text-label-caption text-neutral-300">28 Oct</span>
+                <div
+                  class="w-16 h-16 rounded-xl bg-neutral-0 flex items-center justify-center p-2 shadow-sm my-1 group-hover:shadow-neutral-400/20 transition-shadow"
+                >
+                  <span
+                    class="material-symbols-outlined text-[36px] text-neutral-800 group-hover:scale-105 transition-transform"
+                    >cloud</span
+                  >
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-200 text-center"
+                  >Overcast</span
+                >
+                <div
+                  class="w-full flex items-center justify-between mt-2 pt-2 bg-neutral-800/40 rounded px-2 py-1 group-hover:bg-neutral-800/70 transition-colors"
+                >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0"
+                    ><span class="temp-val" data-c="17">17</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="w-12 h-1 bg-gradient-to-r from-tertiary to-neutral-600 rounded-full relative overflow-hidden"
+                  >
+                    <div class="absolute inset-0 shimmer-bar"></div>
+                  </div>
+                  <span class="font-metric-bold text-metric-bold text-neutral-300"
+                    ><span class="temp-val" data-c="9">9</span><span class="unit-deg">°</span></span
+                  >
+                </div>
+              </div>
+              <!-- Day 6: Tue -->
+              <div
+                class="interactive-card bg-card-surface rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md cursor-pointer group"
+              >
+                <span
+                  class="font-title-day text-title-day text-neutral-0 group-hover:text-accent-blue transition-colors"
+                  >Tue</span
+                >
+                <span class="font-label-caption text-label-caption text-neutral-300">29 Oct</span>
+                <div
+                  class="w-16 h-16 rounded-xl bg-neutral-0 flex items-center justify-center p-2 shadow-sm my-1 group-hover:shadow-accent-blue/20 transition-shadow"
+                >
+                  <span
+                    class="material-symbols-outlined text-[36px] text-accent-blue group-hover:translate-x-0.5 transition-transform"
+                    >foggy</span
+                  >
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-200 text-center"
+                  >Dense Mist</span
+                >
+                <div
+                  class="w-full flex items-center justify-between mt-2 pt-2 bg-neutral-800/40 rounded px-2 py-1 group-hover:bg-neutral-800/70 transition-colors"
+                >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0"
+                    ><span class="temp-val" data-c="15">15</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="w-12 h-1 bg-gradient-to-r from-tertiary to-neutral-700 rounded-full relative overflow-hidden"
+                  >
+                    <div class="absolute inset-0 shimmer-bar"></div>
+                  </div>
+                  <span class="font-metric-bold text-metric-bold text-neutral-300"
+                    ><span class="temp-val" data-c="8">8</span><span class="unit-deg">°</span></span
+                  >
+                </div>
+              </div>
+              <!-- Day 7: Wed -->
+              <div
+                class="interactive-card bg-card-surface rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md cursor-pointer group"
+              >
+                <span
+                  class="font-title-day text-title-day text-neutral-0 group-hover:text-secondary transition-colors"
+                  >Wed</span
+                >
+                <span class="font-label-caption text-label-caption text-neutral-300">30 Oct</span>
+                <div
+                  class="w-16 h-16 rounded-xl bg-neutral-0 flex items-center justify-center p-2 shadow-sm my-1 group-hover:shadow-secondary/30 transition-shadow"
+                >
+                  <span
+                    class="material-symbols-outlined text-[36px] text-accent-orange group-hover:rotate-45 transition-transform duration-500"
+                    >wb_sunny</span
+                  >
+                </div>
+                <span class="font-label-caption text-label-caption text-neutral-200 text-center"
+                  >Clear</span
+                >
+                <div
+                  class="w-full flex items-center justify-between mt-2 pt-2 bg-neutral-800/40 rounded px-2 py-1 group-hover:bg-neutral-800/70 transition-colors"
+                >
+                  <span class="font-metric-bold text-metric-bold text-neutral-0"
+                    ><span class="temp-val" data-c="18">18</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                  <div
+                    class="w-12 h-1 bg-gradient-to-r from-tertiary to-secondary rounded-full relative overflow-hidden"
+                  >
+                    <div class="absolute inset-0 shimmer-bar"></div>
+                  </div>
+                  <span class="font-metric-bold text-metric-bold text-neutral-300"
+                    ><span class="temp-val" data-c="10">10</span
+                    ><span class="unit-deg">°</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- Section 6: Regional Atmospheric Doppler & Radar Snapshot -->
+          <section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg mb-space-lg">
+            <div
+              class="interactive-card lg:col-span-8 bg-neutral-800 rounded-xl p-space-xl shadow-lg flex flex-col justify-between border border-border-hairline/30"
+            >
+              <div class="flex items-center justify-between mb-space-md">
+                <div class="flex items-center gap-space-sm">
+                  <span class="flex h-3 w-3 relative">
+                    <span
+                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"
+                    ></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-secondary"></span>
+                  </span>
+                  <h4 class="font-title-hourly text-title-hourly text-neutral-0">
+                    Doppler Reflectivity Radar (Brandenburg Basin)
+                  </h4>
+                </div>
+                <div class="flex items-center gap-space-xs">
+                  <span
+                    class="px-space-sm py-0.5 rounded bg-card-surface text-neutral-300 font-label-caption text-label-caption border border-border-hairline/40"
+                    >Layer: Composite Rain/Snow</span
+                  >
+                  <button
+                    class="p-1 rounded bg-neutral-700 hover:bg-surface-container-high text-neutral-0 transition-all active:scale-90"
+                    id="radarFullscreenBtn"
+                    title="Toggle Fullscreen Preview"
+                  >
+                    <span class="material-symbols-outlined text-[18px]">fullscreen</span>
+                  </button>
+                </div>
+              </div>
+              <!-- Live Location Map Element with Google Maps Static pipeline + Live Doppler Sweep Overlay -->
+              <div
+                class="w-full h-72 bg-cover bg-center rounded-xl relative overflow-hidden shadow-inner flex items-end p-space-md group cursor-crosshair"
+                data-location="Berlin, Germany"
+                id="radarContainer"
+                style="
+                  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC4KwkVkmoJrTDVxVhL_97XaEalRDBMfKSTX3D7bAY-m7yJzV0pB7v-_rhfi7sH050yiJHBmCKDxXxQ3P191Sz6hmk038ik0j6WQmaQqwY7JjQyA_K-cbVtXA01U9SCbD73vhHge6APJBKr_mswU9-CzPcEWmlbHO7dZhGeZ1yThaEWqcYhzuQtnlovn8W8TwXI7FiRyyKn6UHKO6rXTAR0sf_J-LS8QVKBKLYNkFHCJ0j_Jqmc6WuOSg');
+                "
+              >
+                <!-- Doppler Radar Sweep Overlay (Rotating Cone + Radial Waves) -->
+                <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                  <!-- Concentric Range Rings -->
+                  <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-accent-blue/30"
+                  ></div>
+                  <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full border border-accent-blue/20"
+                  ></div>
+                  <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] rounded-full border border-accent-blue/10"
+                  ></div>
+                  <!-- Central Crosshairs -->
+                  <div class="absolute top-1/2 left-0 right-0 h-px bg-accent-blue/20"></div>
+                  <div class="absolute left-1/2 top-0 bottom-0 w-px bg-accent-blue/20"></div>
+                  <!-- Continuous Radar Sweep Scan Fan -->
+                  <div
+                    class="radar-sweep-cone absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[42rem] h-[42rem] rounded-full pointer-events-none"
+                    style="
+                      background: conic-gradient(
+                        from 0deg,
+                        transparent 0deg,
+                        transparent 300deg,
+                        rgba(66, 85, 220, 0.08) 325deg,
+                        rgba(255, 122, 10, 0.35) 360deg
+                      );
+                    "
+                  ></div>
+                  <!-- Live Radar Center Blip with Ripple -->
+                  <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+                  >
+                    <div
+                      class="w-3 h-3 rounded-full bg-accent-orange shadow-[0_0_12px_rgba(255,122,10,1)]"
+                    ></div>
+                    <div
+                      class="absolute w-8 h-8 rounded-full border border-accent-orange animate-ping opacity-75"
+                    ></div>
+                  </div>
+                </div>
+                <div
+                  class="relative z-10 bg-surface/90 backdrop-blur px-space-md py-space-sm rounded-lg flex items-center gap-space-md border border-border-hairline/50 shadow-md"
+                >
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-accent-blue"></span>
+                    <span class="font-label-caption text-label-caption text-neutral-0"
+                      >Light: &lt; 1 mm/h</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-accent-orange"></span>
+                    <span class="font-label-caption text-label-caption text-neutral-0"
+                      >Mod: 1-5 mm/h</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-secondary-container"></span>
+                    <span class="font-label-caption text-label-caption text-neutral-0"
+                      >Heavy: &gt; 5 mm/h</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Regional Station Comparison Stream -->
+            <div
+              class="interactive-card lg:col-span-4 bg-neutral-800 rounded-xl p-space-xl shadow-lg flex flex-col justify-between border border-border-hairline/30"
+            >
+              <div>
+                <div class="flex items-center justify-between mb-space-md">
+                  <h4 class="font-title-hourly text-title-hourly text-neutral-0">
+                    Nearby Stations
+                  </h4>
+                  <span
+                    class="font-label-caption text-label-caption text-tertiary flex items-center gap-1"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+                    Real-time
+                  </span>
+                </div>
+                <div class="space-y-space-sm">
+                  <div
+                    class="flex items-center justify-between p-space-md rounded-lg bg-card-surface/70 hover:bg-card-surface hover:translate-x-1 transition-all duration-200 cursor-pointer border border-transparent hover:border-border-hairline group"
+                  >
+                    <div class="flex items-center gap-space-sm">
+                      <span
+                        class="material-symbols-outlined text-secondary text-[20px] group-hover:rotate-45 transition-transform"
+                        >near_me</span
+                      >
+                      <div>
+                        <span
+                          class="font-interactive-label text-interactive-label text-neutral-0 block group-hover:text-secondary transition-colors"
+                          >Potsdam</span
+                        >
+                        <span class="font-label-caption text-label-caption text-neutral-300"
+                          >26 km SW</span
+                        >
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <span class="font-metric-bold text-metric-bold text-neutral-0 block"
+                        ><span class="temp-val" data-c="20.8">20.8</span
+                        ><span class="unit-symbol">°C</span></span
+                      >
+                      <span class="font-label-caption text-label-caption text-secondary"
+                        >Clear</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-space-md rounded-lg bg-card-surface/70 hover:bg-card-surface hover:translate-x-1 transition-all duration-200 cursor-pointer border border-transparent hover:border-border-hairline group"
+                  >
+                    <div class="flex items-center gap-space-sm">
+                      <span
+                        class="material-symbols-outlined text-tertiary text-[20px] group-hover:rotate-45 transition-transform"
+                        >near_me</span
+                      >
+                      <div>
+                        <span
+                          class="font-interactive-label text-interactive-label text-neutral-0 block group-hover:text-tertiary transition-colors"
+                          >Schönefeld</span
+                        >
+                        <span class="font-label-caption text-label-caption text-neutral-300"
+                          >18 km SE</span
+                        >
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <span class="font-metric-bold text-metric-bold text-neutral-0 block"
+                        ><span class="temp-val" data-c="21.4">21.4</span
+                        ><span class="unit-symbol">°C</span></span
+                      >
+                      <span class="font-label-caption text-label-caption text-neutral-300"
+                        >Scattered</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-space-md rounded-lg bg-card-surface/70 hover:bg-card-surface hover:translate-x-1 transition-all duration-200 cursor-pointer border border-transparent hover:border-border-hairline group"
+                  >
+                    <div class="flex items-center gap-space-sm">
+                      <span
+                        class="material-symbols-outlined text-accent-blue text-[20px] group-hover:rotate-45 transition-transform"
+                        >near_me</span
+                      >
+                      <div>
+                        <span
+                          class="font-interactive-label text-interactive-label text-neutral-0 block group-hover:text-primary transition-colors"
+                          >Spandau Basin</span
+                        >
+                        <span class="font-label-caption text-label-caption text-neutral-300"
+                          >14 km W</span
+                        >
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <span class="font-metric-bold text-metric-bold text-neutral-0 block"
+                        ><span class="temp-val" data-c="19.9">19.9</span
+                        ><span class="unit-symbol">°C</span></span
+                      >
+                      <span class="font-label-caption text-label-caption text-accent-blue"
+                        >Cloudy</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mt-space-md pt-space-md bg-neutral-900/40 rounded-lg p-space-md flex items-center justify-between border border-border-hairline/20"
+              >
+                <span class="font-label-caption text-label-caption text-neutral-300"
+                  >Telemetry Server Node</span
+                >
+                <span
+                  class="font-label-caption text-label-caption text-secondary font-metric-bold flex items-center gap-1"
+                >
+                  <span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+                  BER-EDGE-01 (Online)
+                </span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <script>
+        // Micro-interactions, temperature toggles & tab controls
+        document.addEventListener('DOMContentLoaded', () => {
+          // 1. Days selector dropdown toggle & selection
+          const daySelectorBtn = document.getElementById('daySelectorBtn');
+          const daysDropdownPanel = document.getElementById('daysDropdownPanel');
+          const selectedDaysLabel = document.getElementById('selectedDaysLabel');
+          const dayChevron = document.getElementById('daySelectorChevron');
+
+          if (daySelectorBtn && daysDropdownPanel) {
+            daySelectorBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const isHidden = daysDropdownPanel.classList.toggle('hidden');
+              if (dayChevron) {
+                dayChevron.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+              }
+            });
+
+            const dropdownItems = daysDropdownPanel.querySelectorAll('.dropdown-item');
+            dropdownItems.forEach((btn) => {
+              btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const spanText = btn.querySelector('span').textContent;
+                if (selectedDaysLabel) {
+                  selectedDaysLabel.textContent = `View: ${spanText}`;
+                }
+                dropdownItems.forEach((item) => {
+                  item.classList.remove('bg-neutral-700');
+                  item.classList.add('text-neutral-200');
+                  const check = item.querySelector('.check-icon');
+                  if (check) check.classList.add('hidden');
+                });
+                btn.classList.add('bg-neutral-700');
+                btn.classList.remove('text-neutral-200');
+                const check = btn.querySelector('.check-icon');
+                if (check) check.classList.remove('hidden');
+
+                daysDropdownPanel.classList.add('hidden');
+                if (dayChevron) dayChevron.style.transform = 'rotate(0deg)';
+              });
+            });
+
+            document.addEventListener('click', () => {
+              if (!daysDropdownPanel.classList.contains('hidden')) {
+                daysDropdownPanel.classList.add('hidden');
+                if (dayChevron) dayChevron.style.transform = 'rotate(0deg)';
+              }
+            });
+          }
+
+          // 2. Radar quick pulse feedback button
+          const radarBtn = document.getElementById('radarBtn');
+          const radarContainer = document.getElementById('radarContainer');
+          if (radarBtn) {
+            radarBtn.addEventListener('click', () => {
+              radarBtn.classList.add('bg-accent-blue', 'text-neutral-0');
+              if (radarContainer) {
+                radarContainer.classList.add('ring-2', 'ring-accent-blue');
+                setTimeout(() => {
+                  radarContainer.classList.remove('ring-2', 'ring-accent-blue');
+                }, 800);
+              }
+              setTimeout(() => {
+                radarBtn.classList.remove('bg-accent-blue', 'text-neutral-0');
+              }, 350);
+            });
+          }
+
+          // Radar Fullscreen preview micro-interaction
+          const radarFullscreenBtn = document.getElementById('radarFullscreenBtn');
+          if (radarFullscreenBtn && radarContainer) {
+            radarFullscreenBtn.addEventListener('click', () => {
+              radarContainer.classList.toggle('h-[32rem]');
+              radarContainer.classList.toggle('h-72');
+            });
+          }
+
+          // 3. Unit Toggle (°C <-> °F) with fluid fade animation
+          let isFahrenheit = false;
+          const unitToggleBtn = document.getElementById('unitToggleBtn');
+          const unitToggleText = document.getElementById('unitToggleText');
+
+          if (unitToggleBtn && unitToggleText) {
+            unitToggleBtn.addEventListener('click', () => {
+              isFahrenheit = !isFahrenheit;
+              unitToggleText.textContent = isFahrenheit ? 'Imperial (°F)' : 'Metric (°C)';
+
+              // Animate temperature elements with smooth opacity pulse
+              const tempVals = document.querySelectorAll('.temp-val');
+              const unitSymbols = document.querySelectorAll('.unit-symbol');
+
+              tempVals.forEach((el) => {
+                el.style.transition = 'opacity 0.2s ease';
+                el.style.opacity = '0';
+                setTimeout(() => {
+                  const celsius = parseFloat(el.getAttribute('data-c'));
+                  if (!isNaN(celsius)) {
+                    if (isFahrenheit) {
+                      const fahr = Math.round((celsius * 9) / 5 + 32);
+                      el.textContent = fahr;
+                    } else {
+                      el.textContent = celsius;
+                    }
+                  }
+                  el.style.opacity = '1';
+                }, 200);
+              });
+
+              unitSymbols.forEach((sym) => {
+                sym.textContent = isFahrenheit ? '°F' : '°C';
+              });
+            });
+          }
+
+          // 4. Hourly Forecast Tabs Switcher
+          const timelineTabs = document.querySelectorAll('#hourlyTimelineTabs button');
+          const hourlyContainer = document.getElementById('hourlyCardsContainer');
+
+          // Alternate datasets for 24h & wind modes
+          const dataModes = {
+            '12h': [
+              {
+                time: 'Now',
+                temp: 21,
+                icon: 'wb_sunny',
+                color: 'text-accent-orange',
+                prob: '10% Rain',
+                fill: '10%',
+              },
+              {
+                time: '15:00',
+                temp: 22,
+                icon: 'partly_cloudy_day',
+                color: 'text-accent-blue',
+                prob: '15% Rain',
+                fill: '15%',
+              },
+              {
+                time: '16:00',
+                temp: 21,
+                icon: 'partly_cloudy_day',
+                color: 'text-accent-blue',
+                prob: '20% Rain',
+                fill: '20%',
+              },
+              {
+                time: '17:00',
+                temp: 19,
+                icon: 'cloud',
+                color: 'text-neutral-800',
+                prob: '45% Rain',
+                fill: '45%',
+              },
+              {
+                time: '18:00',
+                temp: 18,
+                icon: 'rainy',
+                color: 'text-accent-blue',
+                prob: '70% Rain',
+                fill: '70%',
+              },
+              {
+                time: '19:00',
+                temp: 17,
+                icon: 'water_drop',
+                color: 'text-tertiary',
+                prob: '60% Rain',
+                fill: '60%',
+              },
+              {
+                time: '20:00',
+                temp: 16,
+                icon: 'nightlight_round',
+                color: 'text-neutral-800',
+                prob: '25% Rain',
+                fill: '25%',
+              },
+            ],
+            '24h': [
+              {
+                time: '21:00',
+                temp: 15,
+                icon: 'nightlight_round',
+                color: 'text-neutral-800',
+                prob: '10% Rain',
+                fill: '10%',
+              },
+              {
+                time: '23:00',
+                temp: 14,
+                icon: 'nightlight_round',
+                color: 'text-neutral-800',
+                prob: '5% Rain',
+                fill: '5%',
+              },
+              {
+                time: '02:00',
+                temp: 13,
+                icon: 'cloud',
+                color: 'text-neutral-800',
+                prob: '5% Rain',
+                fill: '5%',
+              },
+              {
+                time: '05:00',
+                temp: 12,
+                icon: 'foggy',
+                color: 'text-accent-blue',
+                prob: '15% Rain',
+                fill: '15%',
+              },
+              {
+                time: '08:00',
+                temp: 16,
+                icon: 'wb_sunny',
+                color: 'text-secondary',
+                prob: '0% Rain',
+                fill: '0%',
+              },
+              {
+                time: '11:00',
+                temp: 20,
+                icon: 'wb_sunny',
+                color: 'text-accent-orange',
+                prob: '0% Rain',
+                fill: '0%',
+              },
+              {
+                time: '14:00',
+                temp: 23,
+                icon: 'partly_cloudy_day',
+                color: 'text-accent-blue',
+                prob: '5% Rain',
+                fill: '5%',
+              },
+            ],
+            wind: [
+              {
+                time: 'Now',
+                temp: 14,
+                isSpeed: true,
+                icon: 'navigation',
+                color: 'text-secondary',
+                prob: 'NW 312°',
+                fill: '35%',
+              },
+              {
+                time: '15:00',
+                temp: 16,
+                isSpeed: true,
+                icon: 'navigation',
+                color: 'text-secondary',
+                prob: 'NW 320°',
+                fill: '40%',
+              },
+              {
+                time: '16:00',
+                temp: 18,
+                isSpeed: true,
+                icon: 'navigation',
+                color: 'text-secondary',
+                prob: 'NNW 335°',
+                fill: '45%',
+              },
+              {
+                time: '17:00',
+                temp: 22,
+                isSpeed: true,
+                icon: 'air',
+                color: 'text-accent-orange',
+                prob: 'Gusts 28',
+                fill: '55%',
+              },
+              {
+                time: '18:00',
+                temp: 19,
+                isSpeed: true,
+                icon: 'air',
+                color: 'text-accent-blue',
+                prob: 'WNW 290°',
+                fill: '48%',
+              },
+              {
+                time: '19:00',
+                temp: 15,
+                isSpeed: true,
+                icon: 'navigation',
+                color: 'text-tertiary',
+                prob: 'W 270°',
+                fill: '38%',
+              },
+              {
+                time: '20:00',
+                temp: 11,
+                isSpeed: true,
+                icon: 'navigation',
+                color: 'text-neutral-300',
+                prob: 'WSW 250°',
+                fill: '28%',
+              },
+            ],
+          };
+
+          function renderHourly(mode) {
+            if (!hourlyContainer) return;
+            const items = dataModes[mode] || dataModes['12h'];
+
+            hourlyContainer.style.opacity = '0';
+            hourlyContainer.style.transform = 'translateY(6px)';
+            hourlyContainer.style.transition = 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+
+            setTimeout(() => {
+              hourlyContainer.innerHTML = items
+                .map((item, idx) => {
+                  let displayVal = item.temp;
+                  let unitLabel = '°';
+                  if (item.isSpeed) {
+                    unitLabel = ' km/h';
+                  } else if (isFahrenheit) {
+                    displayVal = Math.round((item.temp * 9) / 5 + 32);
+                  }
+                  const isNow = idx === 0 && mode === '12h';
+                  return `
+            <div class="min-w-[145px] flex-1 ${isNow ? 'bg-surface-container-high border-primary/30' : 'bg-neutral-700 hover:bg-surface-bright/70 border-transparent hover:border-primary/20'} transition-all duration-300 hover:scale-105 cursor-pointer rounded-xl p-space-md flex flex-col items-center justify-between gap-space-sm shadow-md border">
+              <span class="font-title-hourly text-title-hourly ${isNow ? 'text-accent-orange font-metric-bold' : 'text-neutral-0'}">${item.time}</span>
+              <div class="w-10 h-10 rounded-lg bg-neutral-0 flex items-center justify-center shadow-sm">
+                <span class="material-symbols-outlined text-[24px] ${item.color}">${item.icon}</span>
+              </div>
+              <span class="font-title-day text-title-day text-neutral-0 font-metric-bold">
+                <span class="temp-val" data-c="${item.temp}">${displayVal}</span><span class="${item.isSpeed ? 'text-xs' : 'unit-deg'}">${unitLabel}</span>
+              </span>
+              <div class="w-full bg-neutral-800 rounded-full h-1.5 overflow-hidden mt-1">
+                <div class="bg-accent-blue h-full" style="width: ${item.fill};"></div>
+              </div>
+              <span class="font-label-caption text-label-caption text-neutral-300">${item.prob}</span>
+            </div>
+          `;
+                })
+                .join('');
+
+              hourlyContainer.style.opacity = '1';
+              hourlyContainer.style.transform = 'translateY(0)';
+            }, 200);
+          }
+
+          timelineTabs.forEach((tabBtn) => {
+            tabBtn.addEventListener('click', () => {
+              timelineTabs.forEach((b) => {
+                b.classList.remove('bg-accent-blue', 'text-neutral-0', 'shadow-sm');
+                b.classList.add('text-neutral-300');
+              });
+              tabBtn.classList.add('bg-accent-blue', 'text-neutral-0', 'shadow-sm');
+              tabBtn.classList.remove('text-neutral-300');
+              renderHourly(tabBtn.getAttribute('data-tab'));
+            });
+          });
+        });
+      </script>
+    </main>
+    <footer
+      class="w-full bg-surface-container-lowest border-t border-border-hairline/30 py-space-xl"
+    >
+      <div
+        class="w-full px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-md"
+      >
+        <div class="flex items-center gap-space-sm">
+          <div
+            class="w-6 h-6 rounded bg-accent-blue flex items-center justify-center text-neutral-0 shadow-sm"
+          >
+            <span class="material-symbols-outlined text-[14px]">air</span>
+          </div>
+          <span class="font-brand-title text-brand-title text-neutral-0 text-base">Weather Now</span
+          ><span class="font-label-caption text-label-caption text-neutral-300 ml-space-xs"
+            >Telemetry Platform © 2025</span
+          >
+        </div>
+        <div class="flex items-center gap-space-lg">
+          <span
+            class="flex items-center gap-space-xs text-neutral-300 font-label-caption text-label-caption"
+            ><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>Station Doppler
+            Feed: Online</span
+          ><a
+            class="text-neutral-300 hover:text-neutral-0 font-label-caption text-label-caption transition-colors"
+            href="#"
+            >API Telemetry</a
+          ><a
+            class="text-neutral-300 hover:text-neutral-0 font-label-caption text-label-caption transition-colors"
+            href="#"
+            >Precision Calibration</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

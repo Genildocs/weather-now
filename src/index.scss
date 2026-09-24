@@ -1,0 +1,32 @@
+@use 'styles/variables' as *;
+@use 'styles/header';
+@use 'styles/layout';
+@use 'styles/city-header';
+@use 'styles/button';
+@use 'styles/bento-grid';
+@use 'styles/hero-card';
+@use 'styles/metric-tile';
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: $bg-main;
+  color: $text-main;
+  font-family: $font-sans;
+  font-size: $font-size-body;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-heading;
+}

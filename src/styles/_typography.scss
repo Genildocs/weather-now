@@ -1,0 +1,51 @@
+// ==========================================
+// Typography Design Tokens (Stitch)
+// ==========================================
+
+// --- Font Families ---
+$font-sans:
+  'DM Sans',
+  system-ui,
+  -apple-system,
+  sans-serif;
+$font-heading: 'Bricolage Grotesque', system-ui, sans-serif;
+
+// --- Font Sizes ---
+$font-size-hero: 96px; // display-hero (desktop)
+$font-size-hero-mobile: 56px; // display-hero (mobile)
+$font-size-headline-lg: 32px; // headline grande
+$font-size-headline-md: 24px; // headline médio
+$font-size-brand: 22px; // logo / marca
+$font-size-title-hourly: 20px; // título horário
+$font-size-title-day: 18px; // dia da semana
+$font-size-body: 18px; // texto padrão
+$font-size-interactive: 16px; // inputs / botões
+$font-size-metric: 16px; // valores numéricos
+$font-size-section: 14px; // títulos de seção
+$font-size-caption: 12px; // legendas / metadata
+
+// --- Font Weights ---
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// --- Line Heights ---
+$line-height-hero: 96px;
+$line-height-hero-mobile: 60px;
+$line-height-headline-lg: 40px;
+$line-height-headline-md: 32px;
+$line-height-brand: 26px;
+$line-height-title: 24px;
+$line-height-body: 28px;
+$line-height-interactive: 20px;
+$line-height-section: 18px;
+$line-height-caption: 16px;
+
+// --- Letter Spacings ---
+$letter-spacing-hero: -2px;
+$letter-spacing-hero-mobile: -1.5px;
+$letter-spacing-brand: -0.5px;
+$letter-spacing-headline: -0.5px;
+$letter-spacing-caption: 0.5px;
