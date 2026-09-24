@@ -4,33 +4,7 @@
 // Card do clima atual: condição, temperatura, sensação, máx/mín e luz do dia
 
 import clsx from 'clsx';
-
-// Ícone padrão (sol com nuvem) — SVG copiado do mockup
-function SunCloudIcon() {
-  return (
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="26" cy="24" r="12" fill="#f87500" />
-      <g className="hero-card__sun-rays" stroke="#ffb68c" strokeLinecap="round" strokeWidth="2.5">
-        <line x1="26" x2="26" y1="6" y2="2" />
-        <line x1="26" x2="26" y1="46" y2="42" />
-        <line x1="8" x2="4" y1="24" y2="24" />
-        <line x1="48" x2="44" y1="24" y2="24" />
-        <line x1="13.27" x2="10.44" y1="11.27" y2="8.44" />
-        <line x1="38.73" x2="41.56" y1="36.73" y2="39.56" />
-        <line x1="13.27" x2="10.44" y1="36.73" y2="39.56" />
-        <line x1="38.73" x2="41.56" y1="11.27" y2="8.44" />
-      </g>
-      <path
-        d="M48 48H22C16.48 48 12 43.52 12 38C12 32.74 16.06 28.43 21.22 28.04C22.68 22.25 27.89 18 34 18C41.34 18 47.36 23.63 47.95 30.82C52.44 31.39 56 35.28 56 40C56 44.42 52.42 48 48 48Z"
-        fill="#3C3B5E"
-      />
-      <path
-        d="M46 46H24C19.58 46 16 42.42 16 38C16 33.79 19.25 30.34 23.38 30.03C24.54 25.4 28.71 22 33.6 22C39.47 22 44.29 26.5 44.76 32.26C48.35 32.72 51.2 35.83 51.2 39.6C51.2 43.13 48.34 46 46 46Z"
-        fill="#4255DC"
-      />
-    </svg>
-  );
-}
+import WeatherIcon from './WeatherIcon';
 
 export function HeroCard({
   badge = 'Condição atual',
@@ -43,8 +17,9 @@ export function HeroCard({
   min,
   daylight,
   comfort,
-  icon = <SunCloudIcon />,
-  iconName = '', // nome de um Material Symbol (ex.: 'rainy'); se vier, substitui o SVG
+  weatherCode, // código WMO → escolhe a cena do <WeatherIcon>
+  isDay = true, // dia: quadrado branco (mockup); noite: quadrado escuro
+  icon, // opcional: um nó pronto que substitui o <WeatherIcon>
   className = '',
   ...props
 }) {
@@ -64,14 +39,8 @@ export function HeroCard({
           <h2 className="hero-card__condition">{condition}</h2>
           {description && <p className="hero-card__description">{description}</p>}
         </div>
-        <div className="hero-card__icon">
-          {iconName ? (
-            <span className="material-symbols-outlined hero-card__symbol" aria-hidden="true">
-              {iconName}
-            </span>
-          ) : (
-            icon
-          )}
+        <div className={clsx('hero-card__icon', !isDay && 'hero-card__icon--night')}>
+          {icon ?? <WeatherIcon code={weatherCode} isDay={isDay} size={64} title={condition} />}
         </div>
       </div>
 

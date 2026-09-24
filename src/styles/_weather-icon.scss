@@ -1,0 +1,399 @@
+// ==========================================
+// Styles: Weather Icon (SVG animado)
+// ==========================================
+// Todas as cores do ícone moram aqui. Cada peça pinta com uma custom
+// property (--wi-*), e os modificadores --day / --night trocam a paleta
+// inteira de uma vez. A paleta da noite é pensada para fundo escuro.
+@use 'sass:color';
+@use 'variables' as *;
+
+// --- Paletas (dia / noite) ---
+// Um map por tema; o @each lá embaixo vira `--wi-<nome>: <cor>`.
+$weather-icon-palettes: (
+  'day': (
+    'sun': $bg-secondary-container,
+    'sun-rays': $color-secondary,
+    'moon': $color-secondary-fixed,
+    'star': $neutral-200,
+    'cloud-body': $accent-blue,
+    'cloud-shadow': $neutral-600,
+    'cloud-back': $color-primary-fixed-dim,
+    'storm-body': $neutral-700,
+    'storm-shadow': $neutral-900,
+    'drop': $accent-rain,
+    'flake': $accent-rain,
+    'hail': $color-primary-fixed-dim,
+    'hail-edge': $accent-rain,
+    'bolt': $accent-orange,
+    'fog': $neutral-300,
+  ),
+  'night': (
+    'sun': $bg-secondary-container,
+    'sun-rays': $color-secondary,
+    'moon': $color-secondary-fixed,
+    'star': $neutral-200,
+    'cloud-body': $bg-tertiary-container,
+    'cloud-shadow': $accent-blue-deep,
+    'cloud-back': $border-outline,
+    'storm-body': $border-outline,
+    'storm-shadow': $neutral-600,
+    'drop': $color-primary,
+    'flake': $neutral-0,
+    'hail': $neutral-200,
+    'hail-edge': $color-primary,
+    'bolt': $accent-orange,
+    'fog': $neutral-300,
+  ),
+);
+
+// Atrasos (negativos = a animação já começa no meio do ciclo, sem "pulo")
+// de cada gota/floco pela posição. O @each gera um :nth-child por item.
+$weather-icon-precip-delays: (
+  1: -0.1s,
+  2: -0.65s,
+  3: -0.3s,
+  4: -0.9s,
+);
+
+.weather-icon {
+  display: block;
+  flex-shrink: 0;
+  overflow: visible; // brilho da lua e do raio pode passar do viewBox
+
+  // Gera .weather-icon--day { --wi-sun: ...; ... } e o mesmo pra --night
+  @each $theme, $palette in $weather-icon-palettes {
+    &--#{$theme} {
+      @each $name, $value in $palette {
+        --wi-#{$name}: #{$value};
+      }
+    }
+  }
+
+  // --- Pintura das peças ---
+  &__sun {
+    fill: var(--wi-sun);
+  }
+
+  &__sun-rays {
+    stroke: var(--wi-sun-rays);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  &__moon {
+    fill: var(--wi-moon);
+  }
+
+  &__star {
+    fill: var(--wi-star);
+  }
+
+  &__cloud-body {
+    fill: var(--wi-cloud-body);
+  }
+
+  &__cloud-shadow {
+    fill: var(--wi-cloud-shadow);
+  }
+
+  &__cloud--back &__cloud-body {
+    fill: var(--wi-cloud-back);
+  }
+
+  &__cloud--storm &__cloud-body {
+    fill: var(--wi-storm-body);
+  }
+
+  &__cloud--storm &__cloud-shadow {
+    fill: var(--wi-storm-shadow);
+  }
+
+  &__drop {
+    stroke: var(--wi-drop);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+
+  &__drizzle {
+    fill: var(--wi-drop);
+  }
+
+  &__flake {
+    stroke: var(--wi-flake);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+
+  &__hail {
+    fill: var(--wi-hail);
+    stroke: var(--wi-hail-edge);
+    stroke-width: 1;
+  }
+
+  &__bolt {
+    fill: var(--wi-bolt);
+    stroke: var(--wi-bolt);
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+
+  &__fog line {
+    stroke: var(--wi-fog);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  // --- Animações (só com --animated) ---
+  // transform-box: fill-box faz o transform-origin ser o centro da PRÓPRIA
+  // peça, e não o canto do SVG — essencial para girar/escalar no lugar.
+  &--animated {
+    .weather-icon__sun-rays,
+    .weather-icon__sun,
+    .weather-icon__moon,
+    .weather-icon__star,
+    .weather-icon__flake {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    // Raios girando devagar
+    .weather-icon__sun-rays {
+      animation: weather-icon-spin 24s linear infinite;
+    }
+
+    // Sol "respirando"
+    .weather-icon__sun {
+      animation: weather-icon-breathe 3.5s ease-in-out infinite;
+    }
+
+    // Lua balançando com brilho suave
+    .weather-icon__moon {
+      animation: weather-icon-moon-glow 5s ease-in-out infinite;
+    }
+
+    .weather-icon__star {
+      animation: weather-icon-twinkle 2.4s ease-in-out infinite;
+    }
+
+    .weather-icon__stars > :nth-child(2) .weather-icon__star {
+      animation-delay: -0.8s;
+    }
+
+    .weather-icon__stars > :nth-child(3) .weather-icon__star {
+      animation-delay: -1.6s;
+    }
+
+    // Nuvem da frente e de trás derivam em sentidos opostos
+    .weather-icon__cloud {
+      animation: weather-icon-drift 6s ease-in-out infinite;
+    }
+
+    .weather-icon__cloud--back {
+      animation-duration: 8s;
+      animation-direction: reverse;
+    }
+
+    // Gotas caem na diagonal (mesma inclinação da linha: 2 pra 6)
+    .weather-icon__drop {
+      animation: weather-icon-rain 1.1s linear infinite;
+    }
+
+    .weather-icon__drizzle {
+      animation: weather-icon-drizzle 1.6s ease-in infinite;
+    }
+
+    .weather-icon__flake {
+      animation: weather-icon-snow 3s linear infinite;
+    }
+
+    .weather-icon__hail {
+      animation: weather-icon-hail 0.9s ease-in infinite;
+    }
+
+    // Atraso escalonado: o item N da precipitação (e o que tem dentro dele,
+    // caso do floco, que é um <g> dentro de outro) recebe o atraso N do map
+    @each $index, $delay in $weather-icon-precip-delays {
+      .weather-icon__precip > :nth-child(#{$index}),
+      .weather-icon__precip > :nth-child(#{$index}) > * {
+        animation-delay: $delay;
+      }
+    }
+
+    // Neve é mais lenta: dobra o atraso pra espalhar os flocos
+    @each $index, $delay in $weather-icon-precip-delays {
+      .weather-icon__precip--snow > :nth-child(#{$index}) > * {
+        animation-delay: $delay * 2;
+      }
+    }
+
+    .weather-icon__bolt {
+      animation: weather-icon-flash 3.2s linear infinite;
+    }
+
+    .weather-icon__fog line {
+      animation: weather-icon-fog 4s ease-in-out infinite alternate;
+
+      &:nth-child(2) {
+        animation-delay: -1.3s;
+        animation-direction: alternate-reverse;
+      }
+
+      &:nth-child(3) {
+        animation-delay: -2.6s;
+      }
+    }
+  }
+
+  // Acessibilidade: parado pra quem pediu menos movimento
+  @media (prefers-reduced-motion: reduce) {
+    &--animated * {
+      animation: none !important;
+    }
+  }
+}
+
+// --- Keyframes ---
+@keyframes weather-icon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes weather-icon-breathe {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes weather-icon-moon-glow {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+    filter: drop-shadow(0 0 1px color.change($color-secondary-fixed, $alpha: 0.3));
+  }
+  50% {
+    transform: rotate(4deg);
+    filter: drop-shadow(0 0 4px color.change($color-secondary-fixed, $alpha: 0.7));
+  }
+}
+
+@keyframes weather-icon-twinkle {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.5);
+    opacity: 0.4;
+  }
+}
+
+@keyframes weather-icon-drift {
+  50% {
+    transform: translateX(1.5px);
+  }
+}
+
+@keyframes weather-icon-rain {
+  0% {
+    transform: translate(0.7px, -2px);
+    opacity: 0;
+  }
+  20%,
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-2.7px, 8px);
+    opacity: 0;
+  }
+}
+
+@keyframes weather-icon-drizzle {
+  0% {
+    transform: translate(0, -2px);
+    opacity: 0;
+  }
+  25%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-1.5px, 7px);
+    opacity: 0;
+  }
+}
+
+// Floco: cai balançando pros lados e girando
+@keyframes weather-icon-snow {
+  0% {
+    transform: translate(0, -3px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  35% {
+    transform: translate(1.5px, 1px) rotate(40deg);
+  }
+  65% {
+    transform: translate(-1.5px, 5px) rotate(80deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0.5px, 9px) rotate(120deg);
+    opacity: 0;
+  }
+}
+
+@keyframes weather-icon-hail {
+  0% {
+    transform: translateY(-3px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(7px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(5px);
+    opacity: 0;
+  }
+}
+
+// Raio: aceso quase o tempo todo, com duas piscadas rápidas no fim do ciclo
+@keyframes weather-icon-flash {
+  0%,
+  84%,
+  100% {
+    opacity: 1;
+    filter: none;
+  }
+  87% {
+    opacity: 0.15;
+  }
+  90% {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px color.change($accent-orange, $alpha: 0.9));
+  }
+  93% {
+    opacity: 0.3;
+  }
+  96% {
+    opacity: 1;
+    filter: drop-shadow(0 0 3px color.change($accent-orange, $alpha: 0.7));
+  }
+}
+
+@keyframes weather-icon-fog {
+  from {
+    transform: translateX(-3px);
+  }
+  to {
+    transform: translateX(3px);
+  }
+}

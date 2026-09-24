@@ -72,12 +72,13 @@ function buildCityHeader(data, now) {
 // --- Card principal ---
 function buildHero(data, today, now) {
   const { current, units, unitLabels } = data;
-  const weather = getWeatherInfo(current.weatherCode, current.isDay);
+  const weather = getWeatherInfo(current.weatherCode);
   const remaining = daylightRemaining(today.sunrise, today.sunset, now);
 
   return {
     condition: weather.label,
-    iconName: weather.icon,
+    weatherCode: current.weatherCode,
+    isDay: current.isDay,
     description: `Vento ${windDirection(current.windDirection)} a ${formatNumber(current.windSpeed)} ${unitLabels.windSpeed}, umidade ${formatNumber(current.humidity)}%`,
     temp: formatNumber(current.temperature),
     unit: unitLabels.temperature,
