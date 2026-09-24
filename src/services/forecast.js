@@ -22,7 +22,14 @@ const CURRENT_VARS = [
   'is_day',
 ];
 
-const HOURLY_VARS = ['temperature_2m', 'weather_code', 'precipitation_probability'];
+const HOURLY_VARS = [
+  'temperature_2m',
+  'weather_code',
+  'precipitation_probability',
+  'is_day',
+  'wind_speed_10m',
+  'wind_direction_10m',
+];
 
 const DAILY_VARS = [
   'weather_code',
@@ -84,6 +91,9 @@ export function normalizeForecast(raw, units) {
     temperature: h.temperature_2m[i],
     weatherCode: h.weather_code[i],
     precipitationProbability: h.precipitation_probability[i],
+    isDay: h.is_day[i] === 1,
+    windSpeed: h.wind_speed_10m[i],
+    windDirection: h.wind_direction_10m[i],
   }));
 
   const daily = d.time.map((time, i) => ({

@@ -57,6 +57,38 @@ export function formatTime(ms, timeZone, { zone = false } = {}) {
   }).format(ms);
 }
 
+// Formatadores do Intl custam caro para criar: guardamos um por fuso
+const dayKeyFormatters = new Map();
+
+// dayKey(ms, 'Asia/Tokyo') → "2026-09-24": a data LOCAL da cidade (não a do
+// navegador). O locale en-CA já devolve no formato AAAA-MM-DD, bom para comparar.
+export function dayKey(ms, timeZone) {
+  let formatter = dayKeyFormatters.get(timeZone);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    dayKeyFormatters.set(timeZone, formatter);
+  }
+  return formatter.format(ms);
+}
+
+// formatShortDate(ms, 'America/Sao_Paulo') → "Sex, 26 set"
+// O pt-BR escreve "sex." e "set." com ponto; tiramos o ponto e juntamos as partes.
+export function formatShortDate(ms, timeZone) {
+  const parts = new Intl.DateTimeFormat(LOCALE, {
+    timeZone,
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  }).formatToParts(ms);
+  const get = (type) => parts.find((part) => part.type === type)?.value.replace('.', '') ?? '';
+  return `${capitalize(get('weekday'))}, ${get('day')} ${get('month')}`;
+}
+
 // formatRelative(fetchedAt, agora) → "agora" | "há 3 min" | "há 2 h"
 export function formatRelative(fromMs, nowMs) {
   const minutes = Math.max(0, Math.floor((nowMs - fromMs) / 60_000));
@@ -118,6 +150,14 @@ const AQI_LEVELS = [
 export function aqiCategory(aqi) {
   if (isMissing(aqi)) return null;
   return AQI_LEVELS.find((band) => aqi <= band.max).label;
+}
+
+// Chance de chuva → faixa da barra (espelha o map $rain-bands do SCSS)
+// rainBand(45) → 'mid'. Faixas: 0–30 low, 30–60 mid, 60–100 high.
+export function rainBand(probability) {
+  if (isMissing(probability) || probability < 30) return 'low';
+  if (probability < 60) return 'mid';
+  return 'high';
 }
 
 // --- Estimativas ---

@@ -8,7 +8,9 @@
 @use 'styles/weather-icon';
 @use 'styles/metric-tile';
 @use 'styles/states';
+@use 'styles/menu';
 @use 'styles/units-dropdown';
+@use 'styles/hourly-forecast';
 * {
   box-sizing: border-box;
   margin: 0;

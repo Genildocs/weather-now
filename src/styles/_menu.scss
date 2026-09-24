@@ -1,0 +1,163 @@
+// ==========================================
+// Styles: Menu suspenso (bloco compartilhado)
+// ==========================================
+// Visual base de todo "menu button" do app (UnitsDropdown, DaySelect).
+// A lógica mora no hook useMenu; aqui só aparência.
+// Específicos de cada menu ficam no partial dele (ex.: _units-dropdown.scss).
+//
+// Estrutura:
+//   .menu (.menu--open, .menu--align-start)
+//     gatilho (qualquer botão; o chevron .btn-icon-right gira ao abrir)
+//     .menu__panel
+//       .menu__item (.menu__item--active) + .menu__check
+//       .menu__group > .menu__group-title
+//       .menu__divider
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.menu {
+  position: relative; // referência para o painel absoluto
+  display: inline-flex;
+
+  // Chevron do gatilho gira quando o menu está aberto
+  .btn-icon-right {
+    transition: transform $duration-fast ease;
+  }
+
+  &--open .btn-icon-right {
+    transform: rotate(180deg);
+  }
+
+  // --- Painel ---
+  &__panel {
+    @include card-surface(
+      $bg: $neutral-800,
+      $padding: $padding-dropdown-panel,
+      $radius: $radius-md,
+      $border-color: $border-hairline,
+      $shadow: $shadow-xl
+    );
+
+    position: absolute;
+    top: calc(100% + #{$space-sm});
+    right: 0; // padrão: alinhado à direita do gatilho
+    z-index: 60; // acima do header (z-index 50)
+    min-width: 14rem;
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+
+    // Fechado: invisível e fora do foco/leitor de tela.
+    // visibility entra no fim da transição para o fade-out aparecer.
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-#{$space-xs});
+    transition:
+      opacity $duration-fast ease,
+      transform $duration-fast $ease-out-expo,
+      visibility 0s linear $duration-fast;
+  }
+
+  // Painel alinhado à esquerda do gatilho (menus no começo da linha)
+  &--align-start &__panel {
+    right: auto;
+    left: 0;
+  }
+
+  &--open &__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+      opacity $duration-fast ease,
+      transform $duration-fast $ease-out-expo,
+      visibility 0s;
+  }
+
+  // --- Itens ---
+  &__item {
+    @include flex-row($gap: $space-sm);
+
+    width: 100%;
+    padding: $padding-menu-item-y $space-md;
+    border: 0;
+    border-radius: $radius-default;
+    background-color: transparent;
+    color: $neutral-200;
+    font-family: $font-sans;
+    font-size: $font-size-interactive;
+    font-weight: $font-weight-medium;
+    line-height: $line-height-interactive;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color $duration-fast ease,
+      color $duration-fast ease;
+
+    &:hover {
+      background-color: $neutral-700;
+      color: $neutral-0;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: -2px;
+      background-color: $neutral-700;
+      color: $neutral-0;
+    }
+
+    &--active {
+      background-color: $neutral-700;
+      color: $neutral-0;
+
+      &:hover {
+        background-color: $bg-surface-container-high;
+      }
+    }
+  }
+
+  &__check {
+    font-size: 16px;
+    color: $color-primary;
+  }
+
+  // --- Grupos ---
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
+  }
+
+  &__group-title {
+    padding: $space-xs $padding-menu-item-x;
+    font-size: $font-size-caption;
+    font-weight: $font-weight-semibold;
+    line-height: $line-height-caption;
+    letter-spacing: $letter-spacing-caption;
+    text-transform: uppercase;
+    color: $neutral-300;
+  }
+
+  &__divider {
+    height: $border-width-hairline;
+    margin: $space-xs 0;
+    background-color: color.change($border-hairline, $alpha: 0.8);
+  }
+}
+
+// Sem animação para quem pediu menos movimento
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    .btn-icon-right,
+    &__panel,
+    &--open &__panel {
+      transition: none;
+    }
+
+    &__panel {
+      transform: none;
+    }
+  }
+}

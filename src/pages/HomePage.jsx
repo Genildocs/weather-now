@@ -11,6 +11,7 @@ import BentoGrid from '../components/layout/BentoGrid';
 import CityHeader from '../components/weather/CityHeader';
 import HeroCard from '../components/weather/HeroCard';
 import MetricTile from '../components/weather/MetricTile';
+import HourlyForecast from '../components/weather/HourlyForecast';
 import { TileStrip, ProgressBar, SegmentBar, SolarArc } from '../components/weather/TileFooters';
 import { LoadingState, NotFoundState, ErrorState } from '../components/weather/WeatherStates';
 import { useWeather } from '../hooks/useWeather';
@@ -221,6 +222,16 @@ export default function HomePage() {
       <BentoGrid hero={<HeroCard {...buildHero(data, today, now)} />}>
         <MetricTiles data={data} today={today} now={now} />
       </BentoGrid>
+
+      {/* key: trocar de cidade zera o dia/aba escolhidos (componente novo) */}
+      <HourlyForecast
+        key={`${data.location.latitude},${data.location.longitude}`}
+        hourly={data.hourly}
+        daily={data.daily}
+        timezone={data.location.timezone}
+        unitLabels={data.unitLabels}
+        now={now}
+      />
     </div>
   );
 }
