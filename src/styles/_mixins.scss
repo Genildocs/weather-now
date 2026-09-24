@@ -19,6 +19,27 @@
   }
 }
 
+// --- Acessibilidade ---
+
+// Esconde da tela mas mantém para leitores de tela (o nome acessível continua)
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+// Desfaz o sr-only (ex.: texto escondido no mobile que volta no tablet)
+@mixin sr-only-undo {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+}
+
 // --- Superfícies ---
 
 // $bg/$padding/$radius: aparência; $border-color: borda hairline; $shadow: sombra (null = sem); $interactive: hover que "levanta" o card

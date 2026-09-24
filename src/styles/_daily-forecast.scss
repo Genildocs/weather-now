@@ -1,0 +1,343 @@
+// ==========================================
+// Styles: Previsão de 7 dias (seção + DayCard)
+// ==========================================
+// Layout mobile-first:
+// - mobile:  lista de 1 coluna, card HORIZONTAL compacto (dia | ícone | barra | máx/mín)
+// - tablet:  grade de 4 colunas, card VERTICAL
+// - desktop: grade de 7 colunas (uma semana numa linha, como o mockup)
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Colunas da grade por breakpoint (map + @each, como no HourCard)
+$daily-columns: (
+  'tablet': 4,
+  'desktop': 7,
+);
+
+// Gradiente térmico frio → quente (tokens da paleta)
+$thermal-gradient: linear-gradient(
+  90deg,
+  $accent-rain,
+  $color-tertiary,
+  $color-secondary,
+  $accent-orange
+);
+
+// Brilho que passa por cima da barra (shimmer do mockup, mais discreto)
+$shimmer-light: color.change($neutral-0, $alpha: 0.3);
+
+// --- Seção ---
+.daily-forecast {
+  margin-block-end: $space-xl;
+
+  &__header {
+    margin-block-end: $space-lg;
+  }
+
+  &__title {
+    font-size: $font-size-headline-md;
+    line-height: $line-height-headline-md;
+    font-weight: $font-weight-bold;
+    color: $neutral-0;
+  }
+
+  &__subtitle {
+    font-size: $font-size-section;
+    line-height: $line-height-section;
+    color: $neutral-300;
+    margin-block-start: $space-xs;
+  }
+
+  // Mobile: lista simples; tablet+: grade com N colunas
+  &__list {
+    display: grid;
+    gap: $space-sm;
+    list-style: none;
+
+    @each $bp, $count in $daily-columns {
+      @include respond-to($bp) {
+        grid-template-columns: repeat($count, minmax(0, 1fr));
+        gap: $space-md;
+      }
+    }
+  }
+
+  // O <li> estica e o botão ocupa a célula inteira (cards da mesma altura)
+  &__item {
+    display: flex;
+  }
+}
+
+// ==========================================
+// DayCard (é um <button>)
+// ==========================================
+.day-card {
+  @include card-surface(
+    $bg: $neutral-800,
+    $padding: $space-sm $space-md,
+    $radius: $radius-lg,
+    $shadow: $shadow-sm,
+    $interactive: true
+  );
+  // Reset de botão: herda fonte/cor e ocupa a célula
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+
+  // --- Mobile: linha em grade (a chuva fica em cima da barra) ---
+  display: grid;
+  grid-template-columns: 4.75rem auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'when icon rain  temps'
+    'when icon range temps';
+  align-items: center;
+  column-gap: $space-md;
+  row-gap: $space-xs;
+
+  // --- Tablet+: card vertical, tudo centralizado ---
+  @include respond-to('tablet') {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'when'
+      'icon'
+      'cond'
+      'rain'
+      'range'
+      'temps';
+    justify-items: center;
+    align-content: start;
+    row-gap: $space-sm;
+    padding: $space-md;
+    text-align: center;
+  }
+
+  &:hover {
+    background-color: color.change($neutral-700, $alpha: 0.9);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  // Dia mostrado na seção por hora (aria-pressed="true")
+  &--selected,
+  &--selected:hover {
+    background-color: $bg-surface-container-high;
+    border-color: color.change($color-primary, $alpha: 0.6);
+    box-shadow:
+      $shadow-md,
+      0 0 0 1px color.change($color-primary, $alpha: 0.35);
+  }
+
+  // --- Dia + data ---
+  &__when {
+    grid-area: when;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: $font-size-interactive;
+    line-height: $line-height-title;
+    font-weight: $font-weight-bold;
+    color: $neutral-0;
+    white-space: nowrap;
+    transition: color $duration-fast;
+
+    @include respond-to('tablet') {
+      font-size: $font-size-title-day;
+    }
+  }
+
+  // "Hoje" em laranja, como o mockup
+  &--today &__name {
+    color: $color-secondary;
+  }
+
+  &:hover &__name {
+    color: $color-primary;
+  }
+
+  &__date {
+    font-size: $font-size-caption;
+    line-height: $line-height-caption;
+    color: $neutral-300;
+    white-space: nowrap;
+  }
+
+  // --- Quadrado branco do ícone (igual ao HourCard) ---
+  &__icon {
+    grid-area: icon;
+    @include flex-row($justify: center);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: $radius-default;
+    background-color: $neutral-0;
+    box-shadow: $shadow-sm;
+    transition: transform $duration-card $ease-out-expo;
+
+    .weather-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+
+    @include respond-to('tablet') {
+      width: 3.5rem;
+      height: 3.5rem;
+      margin-block: $space-xs;
+
+      .weather-icon {
+        width: 2.75rem;
+        height: 2.75rem;
+      }
+    }
+  }
+
+  &:hover &__icon {
+    transform: scale(1.08);
+  }
+
+  // Mesma estratégia do HourCard: ícones pausados, rodando só no
+  // card sob o mouse ou com foco de teclado (3 classes vencem as do ícone).
+  & &__icon .weather-icon--animated * {
+    animation-play-state: paused;
+  }
+
+  &:hover &__icon .weather-icon--animated *,
+  &:focus-visible &__icon .weather-icon--animated * {
+    animation-play-state: running;
+  }
+
+  // --- Condição: só no card vertical (no mobile o nome acessível já diz) ---
+  &__condition {
+    grid-area: cond;
+    display: none;
+    font-size: $font-size-caption;
+    line-height: $line-height-caption;
+    font-weight: $font-weight-medium;
+    color: $neutral-200;
+
+    @include respond-to('tablet') {
+      display: block;
+    }
+  }
+
+  // --- Chance de chuva (máxima do dia) ---
+  &__rain {
+    grid-area: rain;
+    @include flex-row($justify: flex-start, $gap: 2px);
+    font-size: $font-size-caption;
+    line-height: $line-height-caption;
+    letter-spacing: $letter-spacing-caption;
+    color: $neutral-300;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__rain-icon {
+    font-size: 14px;
+    color: $accent-rain;
+  }
+
+  // --- Barra térmica: trilho = semana; trecho = este dia ---
+  &__range {
+    grid-area: range;
+    position: relative;
+    width: 100%;
+    height: 0.375rem;
+    border-radius: $radius-full;
+    background-color: $neutral-900;
+  }
+
+  // O gradiente ocupa o trilho TODO e o clip-path recorta só [início, fim]:
+  // assim a cor de cada trecho mostra onde o dia cai na escala da semana.
+  &__range-fill {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background-image: $thermal-gradient;
+    clip-path: inset(
+      0 calc(100% - var(--range-end, 100%)) 0 var(--range-start, 0%) round $radius-full
+    );
+
+    // Shimmer: faixa de luz atravessando o trecho
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(90deg, transparent 0%, $shimmer-light 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: day-card-shimmer 3.5s linear infinite;
+    }
+  }
+
+  // --- Máx / mín ---
+  &__temps {
+    grid-area: temps;
+    display: flex;
+    align-items: baseline;
+    gap: $space-sm;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Largura fixa no mobile: as colunas de temperatura alinham entre os cards
+  &__max,
+  &__min {
+    font-size: $font-size-metric;
+    line-height: $line-height-title;
+    font-weight: $font-weight-bold;
+    white-space: nowrap;
+    min-width: 2.5rem;
+    text-align: end;
+
+    @include respond-to('tablet') {
+      min-width: 0;
+    }
+  }
+
+  &__max {
+    color: $neutral-0;
+  }
+
+  &__min {
+    color: $neutral-300;
+  }
+
+  &__unit {
+    font-size: $font-size-caption;
+    font-weight: $font-weight-medium;
+    color: $neutral-300;
+  }
+}
+
+@keyframes day-card-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+// Acessibilidade: sem shimmer, levantar ou transições pra quem pediu menos movimento
+// (os ícones já param sozinhos em _weather-icon.scss)
+@media (prefers-reduced-motion: reduce) {
+  .day-card,
+  .day-card__name,
+  .day-card__icon {
+    transition: none;
+  }
+
+  .day-card:hover,
+  .day-card:hover .day-card__icon {
+    transform: none;
+  }
+
+  .day-card__range-fill::after {
+    animation: none;
+    display: none;
+  }
+}

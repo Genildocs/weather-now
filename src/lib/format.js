@@ -79,6 +79,12 @@ export function dayKey(ms, timeZone) {
 // formatShortDate(ms, 'America/Sao_Paulo') → "Sex, 26 set"
 // O pt-BR escreve "sex." e "set." com ponto; tiramos o ponto e juntamos as partes.
 export function formatShortDate(ms, timeZone) {
+  const { weekday, day, month } = shortDateParts(ms, timeZone);
+  return `${weekday}, ${day} ${month}`;
+}
+
+// Partes de uma data curta, sem o ponto do pt-BR ("sáb." → "Sáb", "set." → "set")
+function shortDateParts(ms, timeZone) {
   const parts = new Intl.DateTimeFormat(LOCALE, {
     timeZone,
     weekday: 'short',
@@ -86,7 +92,27 @@ export function formatShortDate(ms, timeZone) {
     month: 'short',
   }).formatToParts(ms);
   const get = (type) => parts.find((part) => part.type === type)?.value.replace('.', '') ?? '';
-  return `${capitalize(get('weekday'))}, ${get('day')} ${get('month')}`;
+  return { weekday: capitalize(get('weekday')), day: get('day'), month: get('month') };
+}
+
+// formatWeekday(ms, 'America/Sao_Paulo') → "Sáb"
+export function formatWeekday(ms, timeZone) {
+  return shortDateParts(ms, timeZone).weekday;
+}
+
+// formatDayMonth(ms, 'America/Sao_Paulo') → "27 set"
+export function formatDayMonth(ms, timeZone) {
+  const { day, month } = shortDateParts(ms, timeZone);
+  return `${day} ${month}`;
+}
+
+// relativeDayName(ms, tz, agora) → "Hoje" | "Amanhã" | null (outros dias)
+// Compara pela data LOCAL da cidade (dayKey), não pelo relógio do navegador.
+export function relativeDayName(ms, timeZone, nowMs) {
+  const key = dayKey(ms, timeZone);
+  if (key === dayKey(nowMs, timeZone)) return 'Hoje';
+  if (key === dayKey(nowMs + 24 * 60 * 60 * 1000, timeZone)) return 'Amanhã';
+  return null;
 }
 
 // formatRelative(fetchedAt, agora) → "agora" | "há 3 min" | "há 2 h"

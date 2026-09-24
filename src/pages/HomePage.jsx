@@ -6,18 +6,21 @@
 // Toda a "tradução" dos números da API para texto fica aqui, nos helpers
 // build*; os componentes continuam só recebendo props prontas.
 
+import { useRef, useState } from 'react';
 import clsx from 'clsx';
 import BentoGrid from '../components/layout/BentoGrid';
 import CityHeader from '../components/weather/CityHeader';
 import HeroCard from '../components/weather/HeroCard';
 import MetricTile from '../components/weather/MetricTile';
 import HourlyForecast from '../components/weather/HourlyForecast';
+import DailyForecast from '../components/weather/DailyForecast';
 import { TileStrip, ProgressBar, SegmentBar, SolarArc } from '../components/weather/TileFooters';
 import { LoadingState, NotFoundState, ErrorState } from '../components/weather/WeatherStates';
 import { useWeather } from '../hooks/useWeather';
 import { useWeatherParams } from '../hooks/useWeatherParams';
 import { useNow } from '../hooks/useNow';
 import { getWeatherInfo } from '../services/weatherCodes';
+import { scrollBehavior } from '../lib/motion';
 import {
   formatNumber,
   formatDate,
@@ -32,6 +35,7 @@ import {
   cloudBase,
   comfortLabel,
   humidityLabel,
+  dayKey,
 } from '../lib/format';
 
 // --- Cabeçalho da cidade ---
@@ -201,6 +205,53 @@ function MetricTiles({ data, today, now }) {
   );
 }
 
+// --- Previsões por hora + 7 dias (compartilham o dia escolhido) ---
+// O dia escolhido mora AQUI (estado local), e não numa store:
+// - só estas duas seções usam; não precisa sobreviver à troca de página;
+// - a HomePage monta este componente com key = coordenadas, então trocar de
+//   cidade recria tudo e o dia volta a "hoje" sozinho (sem effect de reset).
+function ForecastSections({ data, now }) {
+  const [day, setDay] = useState(null); // dayKey; null = primeiro dia (hoje)
+  const hourlyRef = useRef(null); // <section> da previsão por hora
+
+  const { daily, hourly, location, unitLabels } = data;
+  const tz = location.timezone;
+
+  // Resolve o dia válido uma vez e entrega o MESMO valor às duas seções
+  const dayKeys = daily.map((d) => dayKey(d.date, tz));
+  const selectedDay = dayKeys.includes(day) ? day : dayKeys[0];
+
+  // Card de 7 dias: troca o dia e rola até a seção por hora
+  function handleSelectDay(nextDay) {
+    setDay(nextDay);
+    hourlyRef.current?.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+  }
+
+  return (
+    <>
+      <HourlyForecast
+        ref={hourlyRef}
+        hourly={hourly}
+        daily={daily}
+        timezone={tz}
+        unitLabels={unitLabels}
+        now={now}
+        selectedDay={selectedDay}
+        onDayChange={setDay}
+      />
+
+      <DailyForecast
+        daily={daily}
+        timezone={tz}
+        unitLabels={unitLabels}
+        now={now}
+        selectedDay={selectedDay}
+        onSelectDay={handleSelectDay}
+      />
+    </>
+  );
+}
+
 export default function HomePage() {
   const { city } = useWeatherParams();
   const { status, data, isRefreshing, retry } = useWeather({ city });
@@ -223,13 +274,10 @@ export default function HomePage() {
         <MetricTiles data={data} today={today} now={now} />
       </BentoGrid>
 
-      {/* key: trocar de cidade zera o dia/aba escolhidos (componente novo) */}
-      <HourlyForecast
+      {/* key: trocar de cidade zera o dia/aba escolhidos (componentes novos) */}
+      <ForecastSections
         key={`${data.location.latitude},${data.location.longitude}`}
-        hourly={data.hourly}
-        daily={data.daily}
-        timezone={data.location.timezone}
-        unitLabels={data.unitLabels}
+        data={data}
         now={now}
       />
     </div>

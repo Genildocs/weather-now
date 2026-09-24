@@ -15,18 +15,23 @@ function HeaderSearch({ initialValue = '', inputRef, onSearch }) {
 
   return (
     <div className="header-search">
-      <span className="material-symbols-outlined search-icon">search</span>
+      <span className="material-symbols-outlined search-icon" aria-hidden="true">
+        search
+      </span>
       <input
         ref={inputRef}
         id="citySearchInput"
         type="text"
         placeholder="Buscar cidade, coordenadas..."
+        aria-label="Buscar cidade"
         autoComplete="off"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         onKeyDown={handleSearchKeyDown}
       />
-      <kbd className="search-badge">⌘K</kbd>
+      <kbd className="search-badge" aria-hidden="true">
+        ⌘K
+      </kbd>
     </div>
   );
 }
@@ -53,7 +58,9 @@ export default function Header({ city = '', onSearch }) {
         {/* Marca / Logo */}
         <div className="header-brand">
           <div className="brand-icon">
-            <span className="material-symbols-outlined">air</span>
+            <span className="material-symbols-outlined" aria-hidden="true">
+              air
+            </span>
           </div>
           <span className="brand-title">Weather Now</span>
         </div>

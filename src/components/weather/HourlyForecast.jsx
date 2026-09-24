@@ -10,6 +10,11 @@
 // Janela de horas:
 // - Hoje: começa na hora atual (card "Agora") e pode passar da meia-noite
 // - Outro dia: começa às 00:00 daquele dia
+//
+// Dia CONTROLADO: quem manda no dia escolhido é a HomePage (a seção de 7 dias
+// também troca o dia). Aqui chega `selectedDay` (dayKey) + `onDayChange`.
+// `ref` (React 19: ref é uma prop comum) aponta para a <section>, para a
+// HomePage poder rolar a página até ela.
 
 import { useEffect, useId, useRef, useState } from 'react';
 import clsx from 'clsx';
@@ -17,17 +22,18 @@ import { Button } from '../ui/Button';
 import { DaySelect } from '../ui/DaySelect';
 import HourCard from './HourCard';
 import { getWeatherInfo } from '../../services/weatherCodes';
+import { scrollBehavior } from '../../lib/motion';
 import {
   dayKey,
   formatNumber,
   formatShortDate,
   formatTime,
   rainBand,
+  relativeDayName,
   windDirection,
 } from '../../lib/format';
 
 const HOUR_MS = 60 * 60 * 1000;
-const DAY_MS = 24 * HOUR_MS;
 
 // Abas: id, rótulo, quantas horas mostra e qual "miolo" o card usa
 const TABS = [
@@ -43,16 +49,10 @@ const SUBTITLES = {
 
 // Opções do seletor: "Hoje", "Amanhã", depois "Sex, 26 set"
 function buildDayOptions(daily, timezone, now) {
-  const today = dayKey(now, timezone);
-  const tomorrow = dayKey(now + DAY_MS, timezone);
-
-  return daily.map((day) => {
-    const key = dayKey(day.date, timezone);
-    let label = formatShortDate(day.date, timezone);
-    if (key === today) label = 'Hoje';
-    else if (key === tomorrow) label = 'Amanhã';
-    return { value: key, label };
-  });
+  return daily.map((day) => ({
+    value: dayKey(day.date, timezone),
+    label: relativeDayName(day.date, timezone, now) ?? formatShortDate(day.date, timezone),
+  }));
 }
 
 // Recorta as horas da janela escolhida
@@ -76,14 +76,18 @@ function mergeEdges(prev, next) {
   return prev.atStart === next.atStart && prev.atEnd === next.atEnd ? prev : next;
 }
 
-// Rola o trilho respeitando quem pediu menos movimento
-function scrollBehavior() {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
-}
-
-export function HourlyForecast({ hourly, daily, timezone, unitLabels, now, className = '' }) {
+export function HourlyForecast({
+  ref,
+  hourly,
+  daily,
+  timezone,
+  unitLabels,
+  now,
+  selectedDay: selectedDayProp, // dayKey ("2026-09-24"); inválido/ausente = primeiro dia
+  onDayChange,
+  className = '',
+}) {
   const [tabId, setTabId] = useState('12h');
-  const [day, setDay] = useState(null); // null = primeiro dia (hoje)
   // O trilho está no começo/fim? (desabilita os botões ◀ ▶)
   const [edges, setEdges] = useState({ atStart: true, atEnd: true });
 
@@ -108,10 +112,18 @@ export function HourlyForecast({ hourly, daily, timezone, unitLabels, now, class
     return () => observer.disconnect();
   }, []);
 
+  // Trocou o dia (aqui no seletor OU num card de 7 dias) → trilho volta ao começo.
+  // Efeito só mexe no DOM (sem setState), então o React Compiler não reclama.
+  useEffect(() => {
+    railRef.current?.scrollTo({ left: 0, behavior: scrollBehavior() });
+  }, [selectedDayProp]);
+
   if (!hourly?.length || !daily?.length) return null;
 
   const dayOptions = buildDayOptions(daily, timezone, now);
-  const selectedDay = day && dayOptions.some((o) => o.value === day) ? day : dayOptions[0].value;
+  const selectedDay = dayOptions.some((o) => o.value === selectedDayProp)
+    ? selectedDayProp
+    : dayOptions[0].value;
   const isToday = selectedDay === dayKey(now, timezone);
   const tab = TABS.find((t) => t.id === tabId);
 
@@ -119,11 +131,6 @@ export function HourlyForecast({ hourly, daily, timezone, unitLabels, now, class
 
   function scrollToStart() {
     railRef.current?.scrollTo({ left: 0, behavior: scrollBehavior() });
-  }
-
-  function handleDayChange(nextDay) {
-    setDay(nextDay);
-    scrollToStart();
   }
 
   function selectTab(nextId) {
@@ -156,7 +163,11 @@ export function HourlyForecast({ hourly, daily, timezone, unitLabels, now, class
   }
 
   return (
-    <section className={clsx('hourly-forecast', className)} aria-labelledby={`${id}-title`}>
+    <section
+      ref={ref}
+      className={clsx('hourly-forecast', className)}
+      aria-labelledby={`${id}-title`}
+    >
       <header className="hourly-forecast__header">
         <div className="hourly-forecast__heading">
           <h2 id={`${id}-title`} className="hourly-forecast__title">
@@ -166,7 +177,7 @@ export function HourlyForecast({ hourly, daily, timezone, unitLabels, now, class
         </div>
 
         <div className="hourly-forecast__controls">
-          <DaySelect options={dayOptions} value={selectedDay} onChange={handleDayChange} />
+          <DaySelect options={dayOptions} value={selectedDay} onChange={onDayChange} />
 
           <div
             role="tablist"

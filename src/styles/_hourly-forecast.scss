@@ -34,9 +34,12 @@ $rail-headroom: $space-md;
   );
   margin-block-end: $space-xl;
   backdrop-filter: blur(8px);
+  // Ao rolar até aqui (card de 7 dias), para abaixo do header fixo
+  scroll-margin-top: calc(#{$header-height-mobile} + #{$space-md});
 
   @include respond-to('tablet') {
     padding: $space-xl;
+    scroll-margin-top: calc(#{$header-height} + #{$space-md});
   }
 
   // --- Cabeçalho: título à esquerda, controles à direita ---

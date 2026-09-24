@@ -23,6 +23,11 @@ $margin-desktop: 3rem; // 48px
 // Largura máxima do conteúdo (centralizado)
 $container-max: 1440px;
 
+// Altura do header fixo (sticky): 1 linha no tablet+, 2 linhas no mobile.
+// Usada no header e no scroll-margin das seções (não ficar escondido embaixo dele).
+$header-height: 72px;
+$header-height-mobile: 108px; // 8 + 42 (marca/unidades) + 8 + 42 (busca) + 8
+
 // --- Layout Padding Presets ---
 $padding-daily-card: 16px;
 $padding-hourly-card-y: 10px;

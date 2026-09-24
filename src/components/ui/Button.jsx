@@ -50,13 +50,14 @@ export function Button({
       {...props}
     >
       {iconLeft && (
-        <span className="material-symbols-outlined btn-icon btn-icon-left">
+        // aria-hidden: o nome do ícone ("settings") não entra no nome acessível
+        <span className="material-symbols-outlined btn-icon btn-icon-left" aria-hidden="true">
           {iconLeft}
         </span>
       )}
       {content && <span className="btn-label">{content}</span>}
       {iconRight && (
-        <span className="material-symbols-outlined btn-icon btn-icon-right">
+        <span className="material-symbols-outlined btn-icon btn-icon-right" aria-hidden="true">
           {iconRight}
         </span>
       )}

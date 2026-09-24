@@ -1,8 +1,12 @@
 // ==========================================
 // Styles: Header
 // ==========================================
-@use 'variables' as *;
+// Mobile-first (respond-to = min-width):
+// - mobile: 2 linhas → [marca .......... unidades] / [busca em largura total]
+// - tablet+: 1 linha → [marca] [busca] [unidades], altura fixa de 72px
 @use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
 
 .app-header {
   position: sticky;
@@ -16,26 +20,33 @@
   border-bottom: $border-width-hairline solid $border-hairline;
 
   .header-container {
-    height: 72px;
-    max-width: 1440px;
+    max-width: $container-max;
     margin: 0 auto;
-    padding: 0 $space-xl;
+    // Mobile: quebra em 2 linhas (a busca pede a linha inteira)
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: $space-lg;
+    gap: $space-sm;
+    min-height: $header-height-mobile;
+    padding: $space-sm $space-md;
 
-    @media (max-width: $breakpoint-tablet) {
-      padding: 0 $space-md;
-      gap: $space-sm;
+    @include respond-to('tablet') {
+      flex-wrap: nowrap;
+      gap: $space-lg;
+      height: $header-height;
+      min-height: 0;
+      padding: 0 $space-xl;
     }
   }
 
   // --- Brand / Logo ---
   .header-brand {
+    order: 1;
     display: flex;
     align-items: center;
     gap: $space-sm;
+    min-width: 0; // deixa o título encolher em telas bem estreitas
     cursor: pointer;
     user-select: none;
     transition: transform 0.2s;
@@ -45,6 +56,7 @@
     }
 
     .brand-icon {
+      flex-shrink: 0;
       width: 40px;
       height: 40px;
       border-radius: $radius-default;
@@ -67,20 +79,25 @@
       color: $neutral-0;
       letter-spacing: -0.5px;
       white-space: nowrap;
-
-      @media (max-width: $breakpoint-mobile) {
-        display: none;
-      }
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
   // --- Barra de Busca ---
+  // Mobile: 3º item, linha inteira; tablet+: no meio, entre marca e ações
   .header-search {
+    order: 3;
     position: relative;
-    flex: 1;
-    max-width: 480px;
+    flex: 1 1 100%;
     display: flex;
     align-items: center;
+
+    @include respond-to('tablet') {
+      order: 2;
+      flex: 1 1 auto;
+      max-width: 480px;
+    }
 
     .search-icon {
       position: absolute;
@@ -93,7 +110,8 @@
     input {
       width: 100%;
       height: 42px;
-      padding: 0 48px 0 42px;
+      // Direita: no mobile não tem o badge ⌘K, então sobra menos padding
+      padding: 0 $space-md 0 42px;
       background-color: $neutral-700;
       border: $border-width-hairline solid $border-hairline;
       border-radius: $radius-default;
@@ -104,6 +122,10 @@
         border-color 0.2s,
         background-color 0.2s,
         box-shadow 0.2s;
+
+      @include respond-to('tablet') {
+        padding-right: 48px;
+      }
 
       &:hover {
         background-color: color.adjust($neutral-700, $lightness: 2%);
@@ -119,7 +141,9 @@
       }
     }
 
+    // Atalho de teclado: só faz sentido com teclado físico (tablet+)
     .search-badge {
+      display: none;
       position: absolute;
       right: $space-sm;
       padding: 2px 6px;
@@ -131,16 +155,32 @@
       font-family: inherit;
       pointer-events: none;
 
-      @media (max-width: $breakpoint-tablet) {
-        display: none;
+      @include respond-to('tablet') {
+        display: block;
       }
     }
   }
 
   // --- Ações ---
   .header-actions {
+    order: 2;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: $space-sm;
+
+    @include respond-to('tablet') {
+      order: 3;
+    }
+
+    // Gatilho "Unidades": só ícones no mobile. O texto fica escondido
+    // (sr-only), então o nome acessível continua sendo "Unidades".
+    .btn-label {
+      @include sr-only;
+
+      @include respond-to('tablet') {
+        @include sr-only-undo;
+      }
+    }
   }
 }
