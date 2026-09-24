@@ -76,10 +76,7 @@ export function ProgressBar({ percent = 0, color = 'blue', left, right }) {
         aria-valuemin={0}
         aria-valuemax={100}
       >
-        <div
-          className={progressFillVariants({ color })}
-          style={{ '--progress': `${clamped}%` }}
-        />
+        <div className={progressFillVariants({ color })} style={{ '--progress': `${clamped}%` }} />
       </div>
       <TileCaption left={left} right={right} />
     </div>
@@ -101,32 +98,70 @@ export function SegmentBar({ segments = [], caption }) {
 }
 
 // --- Arco solar: SVG do mockup + nascer / zênite / pôr do sol ---
-export function SolarArc({ sunrise, zenith, sunset }) {
+// O arco é meia elipse com centro (80, 50), raio horizontal 65 e vertical 38.
+// `progress` vai de 0 (nascer) a 1 (pôr); o ponto do sol é calculado por
+// trigonometria: ângulo = π × progress, andando da esquerda para a direita.
+// `progress` null = noite → esconde o sol e o trecho percorrido.
+const ARC = { cx: 80, cy: 50, rx: 65, ry: 38 };
+
+function sunPosition(progress) {
+  const angle = Math.PI * progress;
+  return {
+    x: ARC.cx - ARC.rx * Math.cos(angle),
+    y: ARC.cy - ARC.ry * Math.sin(angle),
+  };
+}
+
+export function SolarArc({ sunrise, zenith, sunset, progress = 0.7 }) {
+  const isDay = progress != null;
+  const clamped = isDay ? Math.min(1, Math.max(0, progress)) : 0;
+  const sun = sunPosition(clamped);
+  const start = `M ${ARC.cx - ARC.rx} ${ARC.cy}`;
+
   return (
     <div className="solar-arc">
       <svg className="solar-arc__graphic" viewBox="0 0 160 55" aria-hidden="true">
         {/* Linha do horizonte tracejada */}
-        <line x1="10" x2="150" y1="50" y2="50" stroke="#3C3B5E" strokeDasharray="3 3" strokeWidth="1.5" />
-        {/* Arco completo */}
-        <path d="M 15 50 A 65 38 0 0 1 145 50" fill="none" stroke="#302F4A" strokeWidth="3" />
-        {/* Trecho já percorrido */}
-        <path
-          d="M 15 50 A 65 38 0 0 1 118 20"
-          fill="none"
-          stroke="#FF7A0A"
-          strokeLinecap="round"
-          strokeWidth="3.5"
+        <line
+          x1="10"
+          x2="150"
+          y1="50"
+          y2="50"
+          stroke="#3C3B5E"
+          strokeDasharray="3 3"
+          strokeWidth="1.5"
         />
-        {/* Posição atual do sol */}
-        <g className="solar-arc__sun">
-          <circle cx="118" cy="20" r="9" fill="#FF7A0A" opacity="0.4" />
-          <circle cx="118" cy="20" r="5" fill="#f87500" />
-        </g>
+        {/* Arco completo */}
+        <path
+          d={`${start} A ${ARC.rx} ${ARC.ry} 0 0 1 ${ARC.cx + ARC.rx} ${ARC.cy}`}
+          fill="none"
+          stroke="#302F4A"
+          strokeWidth="3"
+        />
+        {isDay && (
+          <>
+            {/* Trecho já percorrido: do nascer até a posição atual */}
+            <path
+              d={`${start} A ${ARC.rx} ${ARC.ry} 0 0 1 ${sun.x} ${sun.y}`}
+              fill="none"
+              stroke="#FF7A0A"
+              strokeLinecap="round"
+              strokeWidth="3.5"
+            />
+            {/* Posição atual do sol */}
+            <g className="solar-arc__sun">
+              <circle cx={sun.x} cy={sun.y} r="9" fill="#FF7A0A" opacity="0.4" />
+              <circle cx={sun.x} cy={sun.y} r="5" fill="#f87500" />
+            </g>
+          </>
+        )}
       </svg>
 
       <div className="solar-arc__footer">
         <span className="solar-arc__time" title="Nascer do sol">
-          <span className="material-symbols-outlined metric-tile__icon--secondary">wb_twilight</span>
+          <span className="material-symbols-outlined metric-tile__icon--secondary">
+            wb_twilight
+          </span>
           {sunrise}
         </span>
         <span className="solar-arc__zenith">Zênite {zenith}</span>

@@ -44,6 +44,7 @@ export function HeroCard({
   daylight,
   comfort,
   icon = <SunCloudIcon />,
+  iconName = '', // nome de um Material Symbol (ex.: 'rainy'); se vier, substitui o SVG
   className = '',
   ...props
 }) {
@@ -63,7 +64,15 @@ export function HeroCard({
           <h2 className="hero-card__condition">{condition}</h2>
           {description && <p className="hero-card__description">{description}</p>}
         </div>
-        <div className="hero-card__icon">{icon}</div>
+        <div className="hero-card__icon">
+          {iconName ? (
+            <span className="material-symbols-outlined hero-card__symbol" aria-hidden="true">
+              {iconName}
+            </span>
+          ) : (
+            icon
+          )}
+        </div>
       </div>
 
       {/* Temperatura + sensação + máx/mín */}
@@ -90,10 +99,12 @@ export function HeroCard({
 
       {/* Faixa inferior */}
       <div className="hero-card__summary">
-        <div className="hero-card__daylight">
-          <span className="material-symbols-outlined">wb_sunny</span>
-          <span>Luz do dia restante: {daylight}</span>
-        </div>
+        {daylight && (
+          <div className="hero-card__daylight">
+            <span className="material-symbols-outlined">wb_sunny</span>
+            <span>Luz do dia restante: {daylight}</span>
+          </div>
+        )}
         {comfort && <span className="hero-card__chip">{comfort}</span>}
       </div>
     </article>

@@ -1,0 +1,117 @@
+// ==========================================
+// Styles: estados da página (carregando, vazio, erro, atualizando)
+// ==========================================
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// --- Wrapper da página: fica esmaecido enquanto recarrega (ex.: troca de unidade) ---
+.weather-page {
+  transition: opacity $duration-card $ease-out-expo;
+
+  &--refreshing {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.weather-state {
+  // Texto só para leitores de tela (some da tela, mas é lido)
+  &__sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+    padding-bottom: $space-lg;
+  }
+
+  // --- Mensagem centralizada (não encontrado / erro) ---
+  &--message {
+    @include card-surface($padding: $space-3xl $space-xl, $radius: $radius-lg, $shadow: $shadow-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-md;
+    max-width: 36rem;
+    margin: $space-3xl auto;
+    text-align: center;
+  }
+
+  &__icon {
+    font-size: 48px;
+    color: $color-primary;
+  }
+
+  &__title {
+    font-size: $font-size-headline-md;
+    line-height: $line-height-headline-md;
+    font-weight: $font-weight-bold;
+    color: $neutral-0;
+  }
+
+  &__text {
+    font-size: $font-size-interactive;
+    line-height: $line-height-body;
+    font-weight: $font-weight-light;
+    color: $neutral-300;
+  }
+}
+
+// ==========================================
+// Esqueleto (placeholder animado)
+// ==========================================
+.skeleton {
+  display: block;
+  border-radius: $radius-md;
+  // Faixa mais clara que atravessa o bloco da esquerda para a direita
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color.change($neutral-600, $alpha: 0.5) 50%,
+      transparent 100%
+    )
+    $neutral-800;
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+
+  &--title {
+    width: min(20rem, 70%);
+    height: 3.5rem;
+  }
+
+  &--line {
+    width: min(28rem, 90%);
+    height: 1.25rem;
+    border-radius: $radius-sm;
+  }
+
+  &--hero {
+    min-height: 22rem;
+    border-radius: $radius-xl;
+  }
+
+  &--tile {
+    min-height: 10rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}

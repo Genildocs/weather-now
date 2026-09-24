@@ -108,6 +108,13 @@
     }
   }
 
+  // Ícone Material Symbol (vem do weather code) no lugar do SVG
+  &__symbol {
+    font-size: 3.5rem;
+    color: $bg-primary-container;
+    font-variation-settings: 'FILL' 1;
+  }
+
   // Raios do sol pulsando em volta do centro do círculo (26, 24)
   &__sun-rays {
     transform-origin: 26px 24px;

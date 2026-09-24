@@ -1,8 +1,37 @@
 import { useState, useRef, useEffect } from 'react';
-import Button from '../ui/Button';
+import UnitsDropdown from '../ui/UnitsDropdown';
 
-export default function Header({ isMetric = true, onToggleUnit, onSearch }) {
-  const [searchValue, setSearchValue] = useState('');
+// Campo de busca. Começa com a cidade atual; o Header o monta com
+// key={city}, então quando a cidade muda (inclusive pelo botão "voltar")
+// o React recria o campo e o texto acompanha — sem effect de sincronização.
+function HeaderSearch({ initialValue = '', inputRef, onSearch }) {
+  const [searchValue, setSearchValue] = useState(initialValue);
+
+  function handleSearchKeyDown(e) {
+    if (e.key === 'Enter' && searchValue.trim()) {
+      if (onSearch) onSearch(searchValue.trim());
+    }
+  }
+
+  return (
+    <div className="header-search">
+      <span className="material-symbols-outlined search-icon">search</span>
+      <input
+        ref={inputRef}
+        id="citySearchInput"
+        type="text"
+        placeholder="Buscar cidade, coordenadas..."
+        autoComplete="off"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        onKeyDown={handleSearchKeyDown}
+      />
+      <kbd className="search-badge">⌘K</kbd>
+    </div>
+  );
+}
+
+export default function Header({ city = '', onSearch }) {
   const searchInputRef = useRef(null);
 
   // Atalho ⌘K ou Ctrl+K para focar no input de busca
@@ -18,12 +47,6 @@ export default function Header({ isMetric = true, onToggleUnit, onSearch }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  function handleSearchKeyDown(e) {
-    if (e.key === 'Enter' && searchValue.trim()) {
-      if (onSearch) onSearch(searchValue.trim());
-    }
-  }
-
   return (
     <header className="app-header">
       <div className="header-container">
@@ -35,33 +58,12 @@ export default function Header({ isMetric = true, onToggleUnit, onSearch }) {
           <span className="brand-title">Weather Now</span>
         </div>
 
-        {/* Campo de Busca */}
-        <div className="header-search">
-          <span className="material-symbols-outlined search-icon">search</span>
-          <input
-            ref={searchInputRef}
-            id="citySearchInput"
-            type="text"
-            placeholder="Buscar cidade, coordenadas..."
-            autoComplete="off"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={handleSearchKeyDown}
-          />
-          <kbd className="search-badge">⌘K</kbd>
-        </div>
+        {/* Campo de Busca (recriado quando a cidade muda) */}
+        <HeaderSearch key={city} initialValue={city} inputRef={searchInputRef} onSearch={onSearch} />
 
-        {/* Ações (Botão de Unidade) */}
+        {/* Ações (menu de unidades: lê e escreve direto na store) */}
         <div className="header-actions">
-          <Button
-            id="unitToggleBtn"
-            variant="unit"
-            iconLeft="thermostat"
-            label={isMetric ? 'Métrico (°C)' : 'Imperial (°F)'}
-            iconRight="swap_vert"
-            title="Alternar entre Métrico (°C) e Imperial (°F)"
-            onClick={onToggleUnit}
-          />
+          <UnitsDropdown />
         </div>
       </div>
     </header>

@@ -17,6 +17,7 @@ function Separator() {
 
 export function CityHeader({
   city,
+  cityTitle = '', // texto extra no hover do nome (ex.: estado/região)
   station,
   syncCycle,
   metar,
@@ -24,46 +25,61 @@ export function CityHeader({
   timeLabel,
   updatedLabel,
   stats = [], // [{ icon, label, value }]
-  hazardsLabel = 'Sem alertas severos',
+  hazardsLabel = 'Sem alertas severos', // null/'' esconde o botão de alertas
+  showRadar = true, // false esconde o botão "Radar ao vivo"
   className = '',
   ...props
 }) {
+  // Cada pedaço da faixa só aparece se tiver conteúdo
+  const hasStatus = Boolean(station || syncCycle);
+  const hasControls = Boolean(showRadar || hazardsLabel);
+
   return (
     <section className={clsx('city-header', className)} {...props}>
       {/* Linha 1: status da estação + cápsula de controles */}
-      <div className="city-header__ribbon">
-        <div className="city-header__status">
-          <span className="city-header__live-dot" aria-hidden="true" />
-          <span className="city-header__station">{station}</span>
-          {syncCycle && (
-            <>
-              <Separator />
-              <span className="city-header__sync">
-                <span className="material-symbols-outlined" aria-hidden="true">
-                  sync
+      {(hasStatus || hasControls) && (
+        <div className="city-header__ribbon">
+          {hasStatus && (
+            <div className="city-header__status">
+              <span className="city-header__live-dot" aria-hidden="true" />
+              {station && <span className="city-header__station">{station}</span>}
+              {station && syncCycle && <Separator />}
+              {syncCycle && (
+                <span className="city-header__sync">
+                  <span className="material-symbols-outlined" aria-hidden="true">
+                    sync
+                  </span>
+                  {syncCycle}
                 </span>
-                {syncCycle}
-              </span>
-            </>
+              )}
+            </div>
+          )}
+
+          {hasControls && (
+            <div className="city-header__controls">
+              {showRadar && (
+                <button type="button" className="city-header__control">
+                  <span className="material-symbols-outlined" aria-hidden="true">
+                    radar
+                  </span>
+                  <span>Radar ao vivo</span>
+                </button>
+              )}
+              {showRadar && hazardsLabel && (
+                <span className="city-header__controls-divider" aria-hidden="true" />
+              )}
+              {hazardsLabel && (
+                <button type="button" className="city-header__control city-header__control--alert">
+                  <span className="material-symbols-outlined" aria-hidden="true">
+                    bolt
+                  </span>
+                  <span>{hazardsLabel}</span>
+                </button>
+              )}
+            </div>
           )}
         </div>
-
-        <div className="city-header__controls">
-          <button type="button" className="city-header__control">
-            <span className="material-symbols-outlined" aria-hidden="true">
-              radar
-            </span>
-            <span>Radar ao vivo</span>
-          </button>
-          <span className="city-header__controls-divider" aria-hidden="true" />
-          <button type="button" className="city-header__control city-header__control--alert">
-            <span className="material-symbols-outlined" aria-hidden="true">
-              bolt
-            </span>
-            <span>{hazardsLabel}</span>
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Linha 2: cidade + data/hora (esquerda) e mini-cards (direita) */}
       <header className="city-header__main">
@@ -72,14 +88,20 @@ export function CityHeader({
             <span className="material-symbols-outlined city-header__pin" aria-hidden="true">
               location_on
             </span>
-            <h1 className="city-header__name">{city}</h1>
+            <h1 className="city-header__name" title={cityTitle || undefined}>
+              {city}
+            </h1>
             {metar && <span className="city-header__metar">METAR: {metar}</span>}
           </div>
 
           <p className="city-header__meta">
             <span>{dateLabel}</span>
-            <Separator />
-            <span>{timeLabel}</span>
+            {timeLabel && (
+              <>
+                <Separator />
+                <span>{timeLabel}</span>
+              </>
+            )}
             {updatedLabel && (
               <>
                 <Separator />

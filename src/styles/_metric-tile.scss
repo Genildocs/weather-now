@@ -233,9 +233,11 @@ $strip-bg-hover: color.change($bg-card-surface, $alpha: 0.8);
     overflow: visible;
   }
 
-  // Ponto do sol pulsando em volta do próprio centro (118, 20)
+  // Ponto do sol pulsando em volta do próprio centro.
+  // A posição muda com o horário, então a origem vem da caixa do próprio <g>
   &__sun {
-    transform-origin: 118px 20px;
+    transform-box: fill-box;
+    transform-origin: center;
     animation: solar-zenith-pulse 2.8s ease-in-out infinite;
   }
 
